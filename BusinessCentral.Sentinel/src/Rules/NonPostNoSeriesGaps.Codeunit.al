@@ -7,7 +7,7 @@ using STM.BusinessCentral.Sentinel;
 
 codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Permissions =
         tabledata AlertSESTM = RI,
         tabledata "No. Series" = R,

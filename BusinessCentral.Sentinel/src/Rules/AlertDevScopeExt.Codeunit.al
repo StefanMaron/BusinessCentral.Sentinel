@@ -6,7 +6,7 @@ using System.Utilities;
 
 codeunit 71180277 AlertDevScopeExtSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Permissions =
         tabledata AlertSESTM = RI,
         tabledata "NAV App Installed App" = R;

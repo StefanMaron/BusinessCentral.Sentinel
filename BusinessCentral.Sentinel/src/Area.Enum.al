@@ -2,8 +2,8 @@ namespace STM.BusinessCentral.Sentinel;
 
 enum 71180277 AreaSESTM
 {
-    Access = Public;
-    Extensible = true;
+    Access = Internal;
+    Extensible = false;
 
     value(1; Technical)
     {

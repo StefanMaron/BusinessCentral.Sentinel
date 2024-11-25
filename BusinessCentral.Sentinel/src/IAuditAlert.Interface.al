@@ -2,7 +2,7 @@ namespace STM.BusinessCentral.Sentinel;
 
 interface IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
 
     procedure CreateAlerts()
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)

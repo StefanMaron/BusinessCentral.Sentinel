@@ -8,7 +8,7 @@ page 71180275 AlertListSESTM
     ApplicationArea = All;
     Caption = 'Alert List';
     Editable = false;
-    Extensible = true;
+    Extensible = false;
     PageType = List;
     SourceTable = AlertSESTM;
     UsageCategory = Lists;

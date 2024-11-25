@@ -2,7 +2,7 @@ namespace STM.BusinessCentral.Sentinel;
 
 table 71180276 IgnoredAlertsSESTM
 {
-    Access = Public;
+    Access = Internal;
     Caption = 'Ignored Alerts';
     DataClassification = SystemMetadata;
     Extensible = false;

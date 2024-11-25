@@ -6,7 +6,7 @@ using System.Security.User;
 
 codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Permissions =
         tabledata "Access Control" = R,
         tabledata AlertSESTM = RI;

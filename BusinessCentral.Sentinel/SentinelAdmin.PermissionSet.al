@@ -4,7 +4,7 @@ using STM.BusinessCentral.Sentinel;
 
 permissionset 71180275 SentinelAdminSESTM
 {
-    Access = Public;
+    Access = Internal;
     Assignable = true;
     Caption = 'Sentinel Admin', MaxLength = 30;
     Permissions = table AlertSESTM = X,

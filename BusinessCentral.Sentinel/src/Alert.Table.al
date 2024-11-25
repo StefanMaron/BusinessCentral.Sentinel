@@ -7,11 +7,11 @@ using STM.BusinessCentral.Sentinel;
 /// </summary>
 table 71180275 AlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Caption = 'Alert';
     DataClassification = SystemMetadata;
     DrillDownPageId = AlertListSESTM;
-    Extensible = true;
+    Extensible = false;
     LookupPageId = AlertListSESTM;
     Permissions =
         tabledata AlertSESTM = RD,
@@ -39,7 +39,7 @@ table 71180275 AlertSESTM
             ToolTip = 'A brief description of the alert.';
 
         }
-        field(4; LongDescription; Text[250])
+        field(4; LongDescription; Text[2048])
         {
             Caption = 'Long Description';
             ToolTip = 'A detailed description of the alert.';
@@ -51,7 +51,7 @@ table 71180275 AlertSESTM
             ToolTip = 'The severity level of the alert.';
 
         }
-        field(6; ActionRecommendation; Text[250])
+        field(6; ActionRecommendation; Text[1024])
         {
             Caption = 'Action Recommendation';
             ToolTip = 'Recommended actions to take in response to the alert.';

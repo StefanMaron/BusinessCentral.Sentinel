@@ -2,7 +2,7 @@ namespace STM.BusinessCentral.Sentinel;
 
 codeunit 71180275 AlertSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
 
     procedure RunAlert()
     begin

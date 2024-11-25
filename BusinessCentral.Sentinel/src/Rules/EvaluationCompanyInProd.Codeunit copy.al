@@ -6,7 +6,7 @@ using System.Environment;
 
 codeunit 71180279 DemoDataExtInProdSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Permissions =
         tabledata AlertSESTM = RI,
         tabledata Company = R;

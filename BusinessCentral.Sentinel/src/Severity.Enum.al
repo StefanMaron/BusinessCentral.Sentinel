@@ -2,7 +2,7 @@ namespace STM.BusinessCentral.Sentinel;
 
 enum 71180276 SeveritySESTM
 {
-    Access = Public;
+    Access = Internal;
     Extensible = false;
 
     value(1; Info)

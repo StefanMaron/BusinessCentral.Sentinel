@@ -6,7 +6,7 @@ using System.Environment.Configuration;
 
 codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
 {
-    Access = Public;
+    Access = Internal;
     Permissions =
         tabledata AlertSESTM = RI,
         tabledata Company = R;
