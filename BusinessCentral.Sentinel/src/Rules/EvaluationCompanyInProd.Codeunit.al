@@ -25,21 +25,15 @@ codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
         Company.SetLoadFields("Name", SystemId);
         if Company.FindSet() then
             repeat
-                Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
-                Alert.SetRange("UniqueIdentifier", Company.SystemId);
-                if Alert.IsEmpty() then begin
-                    Alert.Validate(AlertCode, "AlertCodeSESTM"::"SE-000003");
-                    Alert.Validate("ShortDescription", StrSubstNo(ShortDescLbl, Company.Name));
-                    if EnvironmentInformation.IsProduction() then
-                        Alert.Validate(Severity, SeveritySESTM::Warning)
-                    else
-                        Alert.Validate(Severity, SeveritySESTM::Info);
-                    Alert.Validate("Area", AreaSESTM::Technical);
-                    Alert.Validate(LongDescription, LongDescLbl);
-                    Alert.Validate(ActionRecommendation, StrSubstNo(CallToActionLbl, Company.Name));
-                    Alert.Validate(UniqueIdentifier, Company.SystemId);
-                    Alert.Insert(true);
-                end;
+                Alert.New(
+                    "AlertCodeSESTM"::"SE-000003",
+                    StrSubstNo(ShortDescLbl, Company.Name),
+                    EnvironmentInformation.IsProduction() ? SeveritySESTM::Warning : SeveritySESTM::Info,
+                    AreaSESTM::Technical,
+                    LongDescLbl,
+                    StrSubstNo(CallToActionLbl, Company.Name),
+                    Company.SystemId
+                );
             until Company.Next() = 0;
 
 
@@ -50,7 +44,12 @@ codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
 
     end;
 
-    procedure RunActionRecommendations(var Alert: Record AlertSESTM)
+    procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
+    begin
+
+    end;
+
+    procedure AutoFix(var Alert: Record AlertSESTM)
     begin
 
     end;

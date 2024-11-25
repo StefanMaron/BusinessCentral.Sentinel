@@ -19,7 +19,12 @@ codeunit 71180275 AlertSESTM implements IAuditAlertSESTM
 
     end;
 
-    procedure RunActionRecommendations(var Alert: Record AlertSESTM)
+    procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
+    begin
+
+    end;
+
+    procedure AutoFix(var Alert: Record AlertSESTM)
     begin
 
     end;

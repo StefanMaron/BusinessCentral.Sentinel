@@ -34,25 +34,22 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
                         if AccessControl."Company Name" = '' then
                             AccessControl."Company Name" := '<all>';
 
-                        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000005");
-                        Alert.SetRange("UniqueIdentifier", CreateUniqueIdentifier(AccessControl));
-                        if Alert.IsEmpty then begin
-                            Alert.Validate(AlertCode, "AlertCodeSESTM"::"SE-000005");
-                            Alert.Validate("ShortDescription", StrSubstNo(ShortDescLbl, User."User Name", AccessControl."Company Name"));
-                            Alert.Validate(Severity, SeveritySESTM::Info);
-                            Alert.Validate("Area", AreaSESTM::Permissions);
-                            Alert.Validate(LongDescription, StrSubstNo(LongDescLbl, User."User Name", AccessControl."Company Name"));
-                            Alert.Validate(ActionRecommendation, StrSubstNo(ActionRecommendationLbl, User."User Name", AccessControl."Company Name"));
-                            Alert.Validate(UniqueIdentifier, CreateUniqueIdentifier(AccessControl));
-                            Alert.Insert(true);
-                        end;
+                        Alert.New(
+                            "AlertCodeSESTM"::"SE-000005",
+                            StrSubstNo(ShortDescLbl, User."User Name", AccessControl."Company Name"),
+                            SeveritySESTM::Info,
+                            AreaSESTM::Permissions,
+                            StrSubstNo(LongDescLbl, User."User Name", AccessControl."Company Name"),
+                            StrSubstNo(ActionRecommendationLbl, User."User Name", AccessControl."Company Name"),
+                            CreateUniqueIdentifier(AccessControl)
+                        );
                     until AccessControl.Next() = 0;
             until User.Next() = 0;
     end;
 
-    local procedure CreateUniqueIdentifier(var AccessControl: Record "Access Control"): Text
+    local procedure CreateUniqueIdentifier(var AccessControl: Record "Access Control"): Text[100]
     begin
-        exit(AccessControl."User Security ID" + '/' + AccessControl."Role ID" + '/' + AccessControl."Company Name");
+        exit(CopyStr(AccessControl."User Security ID" + '/' + AccessControl."Role ID" + '/' + AccessControl."Company Name", 1, 100));
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
@@ -60,7 +57,7 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
         // Todo: Add more details with explanation
     end;
 
-    procedure RunActionRecommendations(var Alert: Record AlertSESTM)
+    procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
     var
         User: Record User;
         OpenPageQst: Label 'Do you want to open the page to manage the user?';
@@ -70,5 +67,10 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
 
         User.SetRange("User Security ID", Alert."UniqueIdentifier".Split('/').Get(1));
         Page.Run(Page::"User Card", User);
+    end;
+
+    procedure AutoFix(var Alert: Record AlertSESTM)
+    begin
+
     end;
 }

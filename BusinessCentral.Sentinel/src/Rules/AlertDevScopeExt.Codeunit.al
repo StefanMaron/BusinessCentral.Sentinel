@@ -24,18 +24,15 @@ codeunit 71180277 AlertDevScopeExtSESTM implements IAuditAlertSESTM
         Extensions.SetLoadFields("App ID", Name);
         if Extensions.FindSet() then
             repeat
-                Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
-                Alert.SetRange("UniqueIdentifier", Extensions."App ID");
-                if Alert.IsEmpty() then begin
-                    Alert.Validate(AlertCode, "AlertCodeSESTM"::"SE-000002");
-                    Alert.Validate("ShortDescription", StrSubstNo(ShortDescLbl, Extensions."Name"));
-                    Alert.Validate(Severity, SeveritySESTM::Warning);
-                    Alert.Validate("Area", AreaSESTM::Technical);
-                    Alert.Validate(LongDescription, LongDescLbl);
-                    Alert.Validate(ActionRecommendation, ActionRecommendationLbl);
-                    Alert.Validate(UniqueIdentifier, Extensions."App ID");
-                    Alert.Insert(true);
-                end;
+                Alert.New(
+                    AlertCodeSESTM::"SE-000002",
+                    StrSubstNo(ShortDescLbl, Extensions."Name"),
+                    SeveritySESTM::Warning,
+                    AreaSESTM::Technical,
+                    LongDescLbl,
+                    ActionRecommendationLbl,
+                    Extensions."App ID"
+                );
             until Extensions.Next() = 0;
     end;
 
@@ -46,11 +43,16 @@ codeunit 71180277 AlertDevScopeExtSESTM implements IAuditAlertSESTM
         Message(DetailedExplanationMsg);
     end;
 
-    procedure RunActionRecommendations(var Alert: Record AlertSESTM)
+    procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
     var
         OpenPageQst: Label 'Do you want to open the page to manage the extension?';
     begin
         if Confirm(OpenPageQst) then
             Page.Run(Page::"Extension Management");
+    end;
+
+    procedure AutoFix(var Alert: Record AlertSESTM)
+    begin
+
     end;
 }

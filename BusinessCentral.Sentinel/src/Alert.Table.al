@@ -14,7 +14,7 @@ table 71180275 AlertSESTM
     Extensible = false;
     LookupPageId = AlertListSESTM;
     Permissions =
-        tabledata AlertSESTM = RD,
+        tabledata AlertSESTM = RID,
         tabledata IgnoredAlertsSESTM = RID;
 
     fields
@@ -155,5 +155,35 @@ table 71180275 AlertSESTM
     begin
         Rec.DeleteAll(true);
         NumberSequence.Restart('BCSentinelSESTMAlertId');
+    end;
+
+    /// <summary>
+    /// This function is used to create a new alert in the system. It will only create the alert if it does not already exist.
+    /// </summary>
+    /// <param name="AlertCodeIn"></param>
+    /// <param name="ShortDescriptionIn"></param>
+    /// <param name="SeverityIn"></param>
+    /// <param name="AreaIn"></param>
+    /// <param name="LongDescriptionIn"></param>
+    /// <param name="ActionRecommendationIn"></param>
+    /// <param name="UniqueIdentifierIn"></param>
+    procedure New(AlertCodeIn: Enum "AlertCodeSESTM"; ShortDescriptionIn: Text; SeverityIn: Enum SeveritySESTM; AreaIn: Enum AreaSESTM; LongDescriptionIn: Text; ActionRecommendationIn: Text; UniqueIdentifierIn: Text[100])
+    var
+        Alert: Record AlertSESTM;
+    begin
+        Alert.SetRange(AlertCode, AlertCodeIn);
+        Alert.SetRange("UniqueIdentifier", UniqueIdentifierIn);
+        Alert.ReadIsolation(IsolationLevel::ReadUncommitted);
+        if Alert.IsEmpty() then
+            exit;
+
+        Rec.Validate(AlertCode, AlertCodeIn);
+        Rec.Validate(ShortDescription, CopyStr(ShortDescriptionIn, 1, MaxStrLen(Rec.ShortDescription)));
+        Rec.Validate(Severity, SeverityIn);
+        Rec.Validate("Area", AreaIn);
+        Rec.Validate(LongDescription, CopyStr(LongDescriptionIn, 1, MaxStrLen(Rec.LongDescription)));
+        Rec.Validate(ActionRecommendation, CopyStr(ActionRecommendationIn, 1, MaxStrLen(Rec.ActionRecommendation)));
+        Rec.Validate(UniqueIdentifier, UniqueIdentifierIn);
+        Rec.Insert(true);
     end;
 }

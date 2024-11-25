@@ -35,28 +35,12 @@ page 71180275 AlertListSESTM
                     AboutText = 'A brief description of the alert. Click on the field to see the full explanation.';
                     AboutTitle = 'Short Description';
                     MultiLine = true;
-
-                    trigger OnDrillDown()
-                    var
-                        IAuditAlert: Interface IAuditAlertSESTM;
-                    begin
-                        IAuditAlert := Rec.AlertCode;
-                        IAuditAlert.ShowMoreDetails(Rec);
-                    end;
                 }
                 field(LongDescription; Rec.LongDescription)
                 {
                     AboutText = 'A more detailed description of the alert. Click on the field to see the full explanation.';
                     AboutTitle = 'Long Description';
                     MultiLine = true;
-
-                    trigger OnDrillDown()
-                    var
-                        IAuditAlert: Interface IAuditAlertSESTM;
-                    begin
-                        IAuditAlert := Rec.AlertCode;
-                        IAuditAlert.ShowMoreDetails(Rec);
-                    end;
                 }
                 field(Severity; Rec.Severity)
                 {
@@ -69,14 +53,6 @@ page 71180275 AlertListSESTM
                     AboutText = 'Recommended actions to take in response to the alert. Depending on the alert, you may be able to run an action to fix the issue.';
                     AboutTitle = 'Action Recommendation';
                     MultiLine = true;
-
-                    trigger OnDrillDown()
-                    var
-                        IAuditAlert: Interface IAuditAlertSESTM;
-                    begin
-                        IAuditAlert := Rec.AlertCode;
-                        IAuditAlert.RunActionRecommendations(Rec);
-                    end;
                 }
                 field(Ignore; Rec.Ignore)
                 {
@@ -154,6 +130,38 @@ page 71180275 AlertListSESTM
                     Rec.FullRerun();
                 end;
             }
+            action(MoreDetails)
+            {
+                Caption = 'More Details';
+                Ellipsis = true;
+                Image = ViewDetails;
+                Scope = Repeater;
+                ToolTip = 'Show more details about this alert.';
+
+                trigger OnAction()
+                var
+                    IAuditAlert: Interface IAuditAlertSESTM;
+                begin
+                    IAuditAlert := Rec.AlertCode;
+                    IAuditAlert.ShowMoreDetails(Rec);
+                end;
+            }
+            action(AutoFix)
+            {
+                Caption = 'Auto Fix';
+                Ellipsis = true;
+                Image = Action;
+                Scope = Repeater;
+                ToolTip = 'Automatically fix the issue that caused this alert.';
+
+                trigger OnAction()
+                var
+                    IAuditAlert: Interface IAuditAlertSESTM;
+                begin
+                    IAuditAlert := Rec.AlertCode;
+                    IAuditAlert.AutoFix(Rec);
+                end;
+            }
         }
         area(Promoted)
         {
@@ -170,6 +178,8 @@ page 71180275 AlertListSESTM
                 actionref(SetToIgnore_Promoted; SetToIgnore) { }
                 actionref(ClearIgnore_Promoted; ClearIgnore) { }
             }
+            actionref(MoreDetails_Promoted; MoreDetails) { }
+            actionref(AutoFix_Promoted; AutoFix) { }
         }
     }
 

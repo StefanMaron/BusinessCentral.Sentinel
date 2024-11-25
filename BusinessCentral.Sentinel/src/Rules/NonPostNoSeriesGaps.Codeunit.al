@@ -74,20 +74,16 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         if NoSeriesLine.FindSet() then
             repeat
                 NoSeriesSingle := NoSeriesLine.Implementation;
-                if not NoSeriesSingle.MayProduceGaps() then begin
-                    Alert.SetRange("AlertCode", AlertCodeSESTM::"SE-000006");
-                    Alert.SetRange(UniqueIdentifier, NoSeriesCode);
-                    if Alert.IsEmpty() then begin
-                        Alert.Validate(AlertCode, "AlertCodeSESTM"::"SE-000006");
-                        Alert.Validate("ShortDescription", StrSubstNo(ShortDescLbl, NoSeriesCode));
-                        Alert.Validate(Severity, SeveritySESTM::Warning);
-                        Alert.Validate("Area", AreaSESTM::Performance);
-                        Alert.Validate(LongDescription, StrSubstNo(LongDescLbl, NoSeriesCode));
-                        Alert.Validate(ActionRecommendation, StrSubstNo(ActionRecommendationLbl, NoSeriesCode));
-                        Alert.Validate(UniqueIdentifier, NoSeriesCode);
-                        Alert.Insert(true);
-                    end;
-                end;
+                if not NoSeriesSingle.MayProduceGaps() then
+                    Alert.New(
+                        AlertCodeSESTM::"SE-000006",
+                        StrSubstNo(ShortDescLbl, NoSeriesCode),
+                        SeveritySESTM::Warning,
+                        AreaSESTM::Performance,
+                        StrSubstNo(LongDescLbl, NoSeriesCode),
+                        StrSubstNo(ActionRecommendationLbl, NoSeriesCode),
+                        NoSeriesCode
+                    );
             until NoSeriesLine.Next() = 0;
     end;
 
@@ -96,7 +92,7 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         // TODO: Implement Detailed description
     end;
 
-    procedure RunActionRecommendations(var Alert: Record AlertSESTM)
+    procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
     var
         NoSeries: Record "No. Series";
         OpenRecordQst: Label 'Do you want to open the No. Series %1?', Comment = '%1 = No. Series Code';
@@ -106,5 +102,10 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
 
         NoSeries.SetRange("Code", Alert.UniqueIdentifier);
         Page.Run(Page::"No. Series", NoSeries);
+    end;
+
+    procedure AutoFix(var Alert: Record AlertSESTM)
+    begin
+
     end;
 }
