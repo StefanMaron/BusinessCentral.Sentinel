@@ -115,7 +115,8 @@ table 71180275 AlertSESTM
         foreach Alert in AlertsToRun do
             Alert.CreateAlerts();
 
-        Rec.FindFirst(); // Move to the first record
+        if not Rec.FindFirst() then
+        ; // Move to the first record, after Alert creation. If no alerts where created, do nothing
     end;
 
     procedure SetToIgnore()
