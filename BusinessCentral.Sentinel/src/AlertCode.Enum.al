@@ -28,7 +28,7 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Implementation = IAuditAlertSESTM = AlertDevScopeExtSESTM;
     }
     /// <summary>
-    /// Evaluation Company detected in Production
+    /// Evaluation Company detected
     /// </summary>
     value(3; "SE-000003")
     {
@@ -36,7 +36,7 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Implementation = IAuditAlertSESTM = EvaluationCompanyInProdSESTM;
     }
     /// <summary>
-    /// Demo Data Extensions should get uninstalled from production
+    /// Demo Data Extensions should get uninstalled
     /// </summary>
     value(4; "SE-000004")
     {

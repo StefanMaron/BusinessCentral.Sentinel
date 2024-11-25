@@ -17,8 +17,8 @@ codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
         Company: Record Company;
         EnvironmentInformation: Codeunit "Environment Information";
         CallToActionLbl: Label 'Delete the Company called %1', Comment = '%1 = Company Name';
-        LongDescLbl: Label 'An evaluation company has been detected in the production environment. This company should be deleted.';
-        ShortDescLbl: Label 'Evaluation Company In Prod detected: %1', Comment = '%1 = Company Name';
+        LongDescLbl: Label 'An evaluation company has been detected in the environment. If you do not need it anymore, you should consider deleting it.';
+        ShortDescLbl: Label 'Evaluation Company detected: %1', Comment = '%1 = Company Name';
     begin
         Company.SetRange("Evaluation Company", true);
         Company.ReadIsolation(IsolationLevel::ReadUncommitted);
