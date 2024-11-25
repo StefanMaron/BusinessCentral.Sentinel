@@ -8,5 +8,6 @@
   "rulesetFile": "custom.ruleset.json",
   "appFolders": [],
   "testFolders": [],
-  "bcptTestFolders": []
+  "bcptTestFolders": [],
+  "repoVersion": "1.1"
 }
