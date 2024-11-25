@@ -9,5 +9,10 @@
   "appFolders": [],
   "testFolders": [],
   "bcptTestFolders": [],
+  "deliverToAppSource": {
+    "productId": "c1566843-a454-4143-8828-ae9118f11efa",
+    "continuousDelivery": false,
+    "mainAppFolder": "BusinessCentral.Sentinel"
+  },
   "repoVersion": "1.1"
 }
