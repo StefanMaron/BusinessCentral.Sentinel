@@ -157,7 +157,9 @@ table 71180275 AlertSESTM
     procedure ClearAllAlerts()
     begin
         Rec.DeleteAll(true);
-        NumberSequence.Restart('BCSentinelSESTMAlertId');
+
+        if NumberSequence.Exists('BCSentinelSESTMAlertId') then
+            NumberSequence.Restart('BCSentinelSESTMAlertId');
     end;
 
     /// <summary>
