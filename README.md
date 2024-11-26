@@ -20,6 +20,7 @@ BusinessCentral.Sentinel is an intelligent monitoring and advisory tool designed
 | SE-000004| Demo Data Extensions should get uninstalled from production | Technical | Info |
 | SE-000005| Inform about users with Super permissions | Permissions| Info |
 | SE-000006| Consider configuring non-posting number series to allow gaps to increase performance | Performance| Warning|
+| SE-000007| Shopify Connector installed but unused.| Performance| Warning|
 
 ## Documentation
 

@@ -47,9 +47,11 @@ codeunit 71180283 ShopifyConnectorInstalledSESTM implements IAuditAlertSESTM
         Company.SetRange("Evaluation Company", false);
         if Company.FindSet() then
             repeat
+                Clear(RecRef);
                 RecRef.Open(ShpfyShopId, false, Company.Name);
                 if not RecRef.IsEmpty() then
                     exit(true);
+                RecRef.Close();
             until Company.Next() = 0;
     end;
 
