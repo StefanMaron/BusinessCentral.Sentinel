@@ -99,6 +99,8 @@ table 71180275 AlertSESTM
             NumberSequence.Insert('BCSentinelSESTMAlertId');
 
         Rec.Id := NumberSequence.Next('BCSentinelSESTMAlertId');
+
+        this.LogUsage();
     end;
 
     procedure FindNewAlerts()
@@ -186,5 +188,17 @@ table 71180275 AlertSESTM
         Rec.Validate(ActionRecommendation, CopyStr(ActionRecommendationIn, 1, MaxStrLen(Rec.ActionRecommendation)));
         Rec.Validate(UniqueIdentifier, UniqueIdentifierIn);
         Rec.Insert(true);
+    end;
+
+    internal procedure LogUsage()
+    var
+        TelemetryHelper: Codeunit TelemetryHelperSESTM;
+        CustomDimensions: Dictionary of [Text, Text];
+    begin
+        CustomDimensions.Add('AlertCode', Format(Rec.AlertCode));
+        CustomDimensions.Add('Severity', Format(Rec.Severity));
+        CustomDimensions.Add('Area', Format(Rec."Area"));
+
+        TelemetryHelper.LogUsage(TelemetryFeaturesSESTM::SESTM0000001, 'Alert created for rule ' + Format(Rec.AlertCode), CustomDimensions);
     end;
 }
