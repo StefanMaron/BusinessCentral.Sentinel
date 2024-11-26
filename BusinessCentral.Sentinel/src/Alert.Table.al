@@ -175,7 +175,7 @@ table 71180275 AlertSESTM
         Alert.SetRange(AlertCode, AlertCodeIn);
         Alert.SetRange("UniqueIdentifier", UniqueIdentifierIn);
         Alert.ReadIsolation(IsolationLevel::ReadUncommitted);
-        if Alert.IsEmpty() then
+        if not Alert.IsEmpty() then
             exit;
 
         Rec.Validate(AlertCode, AlertCodeIn);
