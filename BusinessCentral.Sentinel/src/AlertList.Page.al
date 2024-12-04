@@ -196,6 +196,11 @@ page 71180275 AlertListSESTM
     var
         SeverityStyle: Text;
 
+    trigger OnOpenPage()
+    begin
+        Rec.SetRange(Ignore, false);
+    end;
+
     trigger OnAfterGetRecord()
     begin
         case Rec.Severity of
@@ -209,5 +214,6 @@ page 71180275 AlertListSESTM
                 SeverityStyle := Format(PageStyle::Unfavorable);
         end;
     end;
+
 
 }
