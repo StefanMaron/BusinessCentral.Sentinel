@@ -60,11 +60,11 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Implementation = IAuditAlertSESTM = NonPostNoSeriesGapsSESTM;
     }
     /// <summary>
-    /// Warns if Shopify Connector is installed and no shops are configured
+    /// Warns if and Extension is installed and but unused
     /// </summary>
     value(7; "SE-000007")
     {
         Caption = 'SE-000007';
-        Implementation = IAuditAlertSESTM = ShopifyConnectorInstalledSESTM;
+        Implementation = IAuditAlertSESTM = UnusedExtensionInstalledSESTM;
     }
 }

@@ -5,7 +5,7 @@ using System.Apps;
 using System.Environment;
 using System.Utilities;
 
-codeunit 71180283 ShopifyConnectorInstalledSESTM implements IAuditAlertSESTM
+codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
 {
     Access = Internal;
     Permissions =
@@ -14,45 +14,56 @@ codeunit 71180283 ShopifyConnectorInstalledSESTM implements IAuditAlertSESTM
 
     procedure CreateAlerts()
     var
-        Alert: Record AlertSESTM;
-        Extensions: Record "NAV App Installed App";
-        ActionRecommendationLbl: Label 'If you are not using the extension, consider uninstalling it. This can have a positive impact on performance.';
-        LongDescLbl: Label 'Shopify Connector is installed in the environment but there is no shop configured for it. This may indicate that the extension is not being used.';
-        ShopifyConnectorIdTok: Label 'ec255f57-31d0-4ca2-b751-f2fa7c745abb';
-        ShortDescLbl: Label 'Shopify Connector installed but unused.';
+        ShopifyConnectorIdTok: Label 'ec255f57-31d0-4ca2-b751-f2fa7c745abb', Locked = true;
     begin
-        Extensions.SetRange("App ID", ShopifyConnectorIdTok);
-        Extensions.ReadIsolation(IsolationLevel::ReadUncommitted);
-        if not Extensions.IsEmpty then
-            if not this.HasShopsInAnyCompany() then
-                Alert.New(
-                    AlertCodeSESTM::"SE-000007",
-                    ShortDescLbl,
-                    SeveritySESTM::Warning,
-                    AreaSESTM::Performance,
-                    LongDescLbl,
-                    ActionRecommendationLbl,
-                    ShopifyConnectorIdTok
-                );
+        RaiseAlertIfExtensionIsUnused(ShopifyConnectorIdTok, 30102); // Shopify Connector / Shops Table
     end;
 
-    local procedure HasShopsInAnyCompany(): Boolean
+    local procedure RaiseAlertIfExtensionIsUnused(AppId: Text; TableToVerify: Integer)
     var
-        Company: Record Company;
-        RecRef: RecordRef;
-        ShpfyShopId: Integer;
+        TablesToVerify: List of [Integer];
     begin
-        ShpfyShopId := 30102;
+        TablesToVerify.Add(TableToVerify);
+        RaiseAlertIfExtensionIsUnused(AppId, TablesToVerify);
+    end;
 
-        Company.SetRange("Evaluation Company", false);
-        if Company.FindSet() then
-            repeat
-                Clear(RecRef);
-                RecRef.Open(ShpfyShopId, false, Company.Name);
-                if not RecRef.IsEmpty() then
-                    exit(true);
-                RecRef.Close();
-            until Company.Next() = 0;
+    local procedure RaiseAlertIfExtensionIsUnused(AppId: Text; TablesToVerify: List of [Integer])
+    var
+        Alert: Record AlertSESTM;
+        Company: Record Company;
+        Extensions: Record "NAV App Installed App";
+        RecRef: RecordRef;
+        TableId: Integer;
+        ActionRecommendationLbl: Label 'If you are not using the extension, consider uninstalling it. This can have a positive impact on performance.';
+        LongDescLbl: Label 'Extension "%1" is installed in the environment but there is no data configured for it. This may indicate that the extension is not being used.', Comment = '%1 = Extension Name';
+        ShortDescLbl: Label 'Extension "%1" is installed but unused.', Comment = '%1 = Extension Name';
+    begin
+        Extensions.SetRange("App ID", AppId);
+        Extensions.ReadIsolation(IsolationLevel::ReadUncommitted);
+        if Extensions.FindFirst() then begin
+            Company.SetRange("Evaluation Company", false);
+            if Company.FindSet() then
+                repeat
+                    foreach TableId in TablesToVerify do begin
+                        Clear(RecRef);
+
+                        RecRef.Open(TableId, false, Company.Name);
+                        if not RecRef.IsEmpty() then
+                            exit;
+                        RecRef.Close();
+                    end;
+                until Company.Next() = 0;
+        end;
+
+        Alert.New(
+            AlertCodeSESTM::"SE-000007",
+            StrSubstNo(ShortDescLbl, Extensions.Name),
+            SeveritySESTM::Warning,
+            AreaSESTM::Performance,
+            StrSubstNo(LongDescLbl, Extensions.Name),
+            ActionRecommendationLbl,
+            CopyStr(AppId, 1, 100)
+        );
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)

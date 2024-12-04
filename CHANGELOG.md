@@ -6,6 +6,8 @@
 
 **Changes:**
 
+- Adjusted rule SE-000007 to be more generic and not Shopify Connector specific
+- Fixed a bug that prevented the full rerun to work
 - Added Changelog
 - Move additional info to wiki instead of a message
 - hide ignored alerts by default

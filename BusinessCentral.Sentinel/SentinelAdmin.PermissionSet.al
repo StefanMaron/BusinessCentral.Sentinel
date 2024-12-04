@@ -20,8 +20,8 @@ permissionset 71180275 SentinelAdminSESTM
         codeunit EvaluationCompanyInProdSESTM = X,
         codeunit NonPostNoSeriesGapsSESTM = X,
         codeunit SentinelTelemetryLoggerSESTM = X,
-        codeunit ShopifyConnectorInstalledSESTM = X,
         codeunit TelemetryHelperSESTM = X,
+        codeunit UnusedExtensionInstalledSESTM = X,
         codeunit UserWithSuperSESTM = X,
         page AlertListSESTM = X,
         page SentinelRuleSetSESTM = X;
