@@ -149,10 +149,12 @@ table 71180275 AlertSESTM
     end;
 
     procedure FullRerun()
+    var
+        Alert: Record AlertSESTM;
     begin
-        Rec.ClearAllAlerts();
+        Alert.ClearAllAlerts();
         Commit(); // Commit the transaction to ensure that the alerts are deleted before they are recreated
-        Rec.FindNewAlerts();
+        Alert.FindNewAlerts();
     end;
 
     procedure ClearAllAlerts()
@@ -194,14 +196,14 @@ table 71180275 AlertSESTM
         if not Alert.IsEmpty() then
             exit;
 
-        Rec.Validate(AlertCode, AlertCodeIn);
-        Rec.Validate(ShortDescription, CopyStr(ShortDescriptionIn, 1, MaxStrLen(Rec.ShortDescription)));
-        Rec.Validate(Severity, CurrSeverity);
-        Rec.Validate("Area", AreaIn);
-        Rec.Validate(LongDescription, CopyStr(LongDescriptionIn, 1, MaxStrLen(Rec.LongDescription)));
-        Rec.Validate(ActionRecommendation, CopyStr(ActionRecommendationIn, 1, MaxStrLen(Rec.ActionRecommendation)));
-        Rec.Validate(UniqueIdentifier, UniqueIdentifierIn);
-        Rec.Insert(true);
+        Alert.Validate(AlertCode, AlertCodeIn);
+        Alert.Validate(ShortDescription, CopyStr(ShortDescriptionIn, 1, MaxStrLen(Alert.ShortDescription)));
+        Alert.Validate(Severity, CurrSeverity);
+        Alert.Validate("Area", AreaIn);
+        Alert.Validate(LongDescription, CopyStr(LongDescriptionIn, 1, MaxStrLen(Alert.LongDescription)));
+        Alert.Validate(ActionRecommendation, CopyStr(ActionRecommendationIn, 1, MaxStrLen(Alert.ActionRecommendation)));
+        Alert.Validate(UniqueIdentifier, UniqueIdentifierIn);
+        Alert.Insert(true);
     end;
 
     internal procedure LogUsage()
