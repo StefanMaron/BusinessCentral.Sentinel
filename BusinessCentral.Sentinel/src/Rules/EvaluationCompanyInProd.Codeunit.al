@@ -40,8 +40,10 @@ codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
+    var
+        WikiLinkTok: Label 'https://github.com/StefanMaron/BusinessCentral.Sentinel/wiki/SE-000003', Locked = true;
     begin
-
+        Hyperlink(WikiLinkTok);
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)

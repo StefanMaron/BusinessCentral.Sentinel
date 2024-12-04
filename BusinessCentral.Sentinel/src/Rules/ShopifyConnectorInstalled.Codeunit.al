@@ -57,9 +57,9 @@ codeunit 71180283 ShopifyConnectorInstalledSESTM implements IAuditAlertSESTM
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
     var
-        DetailedExplanationMsg: Label 'This alert searches for the Shopify Connector extension and checks if there are any shops configured in a non-evaluation company. That means that the CRONUS company is not considered.\If there are no shops configured, a warning is raised. Extensions that are not used should be uninstalled to improve performance.';
+        WikiLinkTok: Label 'https://github.com/StefanMaron/BusinessCentral.Sentinel/wiki/SE-000007', Locked = true;
     begin
-        Message(DetailedExplanationMsg);
+        Hyperlink(WikiLinkTok);
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)

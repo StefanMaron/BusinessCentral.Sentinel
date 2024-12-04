@@ -53,8 +53,10 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
+    var
+        WikiLinkTok: Label 'https://github.com/StefanMaron/BusinessCentral.Sentinel/wiki/SE-000005', Locked = true;
     begin
-        // Todo: Add more details with explanation
+        Hyperlink(WikiLinkTok);
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)

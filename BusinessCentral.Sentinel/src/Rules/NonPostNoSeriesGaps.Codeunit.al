@@ -88,8 +88,10 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
+    var
+        WikiLinkTok: Label 'https://github.com/StefanMaron/BusinessCentral.Sentinel/wiki/SE-000006', Locked = true;
     begin
-        // TODO: Implement Detailed description
+        Hyperlink(WikiLinkTok);
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)

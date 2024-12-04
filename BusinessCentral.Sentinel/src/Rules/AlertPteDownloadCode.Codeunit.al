@@ -48,9 +48,9 @@ codeunit 71180276 AlertPteDownloadCodeSESTM implements IAuditAlertSESTM
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
     var
-        MoreDetailsMsg: Label 'The extension is a Per Tenant Extension and does not allow Download Code. If the code was developed for you by a third party, you might want to make sure to have access to the code in case you need to make changes in the future and the third party is not available anymore.';
+        WikiLinkTok: Label 'https://github.com/StefanMaron/BusinessCentral.Sentinel/wiki/SE-000001', Locked = true;
     begin
-        Message(MoreDetailsMsg);
+        Hyperlink(WikiLinkTok);
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
