@@ -6,6 +6,7 @@
 
 **Changes:**
 
+- Added extensions to Rule SE-000007: Shopify Connector, AMC Banking, API - Cross Environment Intercompany, Business Central Cloud Migration - Previous Release, Business Central Cloud Migration API, Business Central Intelligent Cloud, Ceridian Payroll
 - Adjusted rule SE-000007 to be more generic and not Shopify Connector specific
 - Fixed a bug that prevented the full rerun to work
 - Added Changelog
