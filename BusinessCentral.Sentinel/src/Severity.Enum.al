@@ -21,4 +21,8 @@ enum 71180276 SeveritySESTM
     {
         Caption = 'Critical';
     }
+    value(5; Disabled)
+    {
+        Caption = 'Disabled';
+    }
 }

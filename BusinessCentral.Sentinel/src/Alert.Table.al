@@ -15,7 +15,8 @@ table 71180275 AlertSESTM
     LookupPageId = AlertListSESTM;
     Permissions =
         tabledata AlertSESTM = RID,
-        tabledata IgnoredAlertsSESTM = RID;
+        tabledata IgnoredAlertsSESTM = RID,
+        tabledata SentinelRuleSetSESTM = R;
 
     fields
     {
@@ -175,7 +176,18 @@ table 71180275 AlertSESTM
     procedure New(AlertCodeIn: Enum "AlertCodeSESTM"; ShortDescriptionIn: Text; SeverityIn: Enum SeveritySESTM; AreaIn: Enum AreaSESTM; LongDescriptionIn: Text; ActionRecommendationIn: Text; UniqueIdentifierIn: Text[100])
     var
         Alert: Record AlertSESTM;
+        SentinelRuleSet: Record SentinelRuleSetSESTM;
+        CurrSeverity: Enum SeveritySESTM;
     begin
+        SentinelRuleSet.ReadIsolation(IsolationLevel::ReadUncommitted);
+        if SentinelRuleSet.Get(AlertCodeIn) then
+            CurrSeverity := SentinelRuleSet.Severity
+        else
+            CurrSeverity := SeverityIn;
+
+        if CurrSeverity = Severity::Disabled then
+            exit;
+
         Alert.SetRange(AlertCode, AlertCodeIn);
         Alert.SetRange("UniqueIdentifier", UniqueIdentifierIn);
         Alert.ReadIsolation(IsolationLevel::ReadUncommitted);
@@ -184,7 +196,7 @@ table 71180275 AlertSESTM
 
         Rec.Validate(AlertCode, AlertCodeIn);
         Rec.Validate(ShortDescription, CopyStr(ShortDescriptionIn, 1, MaxStrLen(Rec.ShortDescription)));
-        Rec.Validate(Severity, SeverityIn);
+        Rec.Validate(Severity, CurrSeverity);
         Rec.Validate("Area", AreaIn);
         Rec.Validate(LongDescription, CopyStr(LongDescriptionIn, 1, MaxStrLen(Rec.LongDescription)));
         Rec.Validate(ActionRecommendation, CopyStr(ActionRecommendationIn, 1, MaxStrLen(Rec.ActionRecommendation)));

@@ -6,7 +6,7 @@ page 71180275 AlertListSESTM
     AboutTitle = 'Business Central Sentinel: Alert List';
     AdditionalSearchTerms = 'Sentinel';
     ApplicationArea = All;
-    Caption = 'Alert List';
+    Caption = 'Sentinel Alerts';
     Editable = false;
     Extensible = false;
     PageType = List;
@@ -161,6 +161,16 @@ page 71180275 AlertListSESTM
                     IAuditAlert := Rec.AlertCode;
                     IAuditAlert.AutoFix(Rec);
                 end;
+            }
+        }
+        area(Navigation)
+        {
+            action(RuleSet)
+            {
+                Caption = 'Rule Set';
+                Image = CheckRulesSyntax;
+                RunObject = page SentinelRuleSetSESTM;
+                ToolTip = 'Open the Rule Set page to view and manage the rules that generate alerts. You can change the severity of the alerts, or disable them.';
             }
         }
         area(Promoted)
