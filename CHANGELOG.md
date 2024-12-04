@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/skywinder/ActionSheetPicker-3.0/tree/HEAD)
+## [Unreleased](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/HEAD)
 
-[Full Changelog](https://github.com/skywinder/ActionSheetPicker-3.0/compare/1.3.17...HEAD)
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.3.17...HEAD)
 
 **Changes:**
 
