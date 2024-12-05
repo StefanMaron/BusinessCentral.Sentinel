@@ -2,6 +2,10 @@
 
 BusinessCentral.Sentinel is an intelligent monitoring and advisory tool designed for Microsoft Dynamics 365 Business Central users. It focuses on the analysis of technical configuration and may include functional configuration in the future. This app provides real-time insights, proactive alerts, and actionable recommendations to enhance operational efficiency, reduce risks, and optimize decision-making. BusinessCentral.Sentinel acts as a vigilant 'sentinel' for your business, ensuring key processes run smoothly and critical issues are addressed promptly.
 
+Get it on AppSource:
+  
+[BusinessCentral.Sentinel](https://appsource.microsoft.com/en-us/product/dynamics-365-business-central/PUBID.stefanmaronconsulting1646304351282%7CAID.sentinel%7CPAPPID.1aba0d21-e0f6-45c2-8d46-b7a4f155d66a?tab=Overview)
+
 ## Features
 
 - **Real-Time Alerts**: Get notified instantly about critical business events.
