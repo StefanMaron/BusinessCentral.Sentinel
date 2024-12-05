@@ -2,7 +2,13 @@
 
 ## [Unreleased](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/HEAD)
 
-[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.3.17...HEAD)
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.4.22...HEAD)
+
+**Changes:**
+
+## [1.4.22](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.4.22) (2024-12-05)
+
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.3.17...1.4.22)
 
 **Changes:**
 
