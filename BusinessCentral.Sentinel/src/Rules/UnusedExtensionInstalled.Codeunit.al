@@ -54,12 +54,14 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
         RecRef: RecordRef;
         TableId: Integer;
         ActionRecommendationLbl: Label 'If you are not using the extension, consider uninstalling it. This can have a positive impact on performance.';
-        LongDescLbl: Label 'Extension "%1" is installed in the environment but there is no data configured for it. This may indicate that the extension is not being used.', Comment = '%1 = Extension Name';
-        ShortDescLbl: Label 'Extension "%1" is installed but unused.', Comment = '%1 = Extension Name';
+        LongDescLbl: Label 'Extension "%1" is installed in the environment but there is no data configured for it. This may indicate that the extension is not being used. App ID: %2', Comment = '%1 = Extension Name, %2 = App ID';
+        ShortDescLbl: Label 'Extension "%1" is installed but unused. App ID: %2', Comment = '%1 = Extension Name, %2 = App ID';
+        AppInfo: ModuleInfo;
+        AppName: Text;
     begin
         Extensions.SetRange("App ID", AppId);
         Extensions.ReadIsolation(IsolationLevel::ReadUncommitted);
-        if Extensions.FindFirst() then begin
+        if not Extensions.IsEmpty() then begin
             Company.SetRange("Evaluation Company", false);
             if Company.FindSet() then
                 repeat
@@ -74,12 +76,14 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
                 until Company.Next() = 0;
         end;
 
+        AppName := NavApp.GetModuleInfo(AppId, AppInfo) ? AppInfo.Name : '<unknown>';
+
         Alert.New(
             AlertCodeSESTM::"SE-000007",
-            StrSubstNo(ShortDescLbl, Extensions.Name),
+            StrSubstNo(ShortDescLbl, AppName, AppId),
             SeveritySESTM::Warning,
             AreaSESTM::Performance,
-            StrSubstNo(LongDescLbl, Extensions.Name),
+            StrSubstNo(LongDescLbl, AppName, AppId),
             ActionRecommendationLbl,
             CopyStr(AppId, 1, 100)
         );

@@ -6,6 +6,9 @@
 
 **Changes:**
 
+**Closed Issues:**
+- Improve Rule SE-000007, there where cases where the App Name was not shown, also display the App ID [\#7](https://github.com/StefanMaron/BusinessCentral.Sentinel/issues/7)
+
 ## [1.4.22](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.4.22) (2024-12-05)
 
 [Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.3.17...1.4.22)
