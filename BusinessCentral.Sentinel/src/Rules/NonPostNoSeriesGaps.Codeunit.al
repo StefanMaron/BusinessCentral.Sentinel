@@ -86,6 +86,9 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         LongDescLbl: Label 'The No. Series %1 does not allow gaps and is responsible for non-posting documents/records. Consider configuring the No. Series to allow gaps to increase performance and decrease locking.', Comment = '%1 = No. Series Code';
         ShortDescLbl: Label 'No Series %1 does not allow gaps', Comment = '%1 = No. Series Code';
     begin
+        if NoSeriesCode = '' then
+            exit;
+
         NoSeriesLine.SetRange("Series Code", NoSeriesCode);
         if NoSeriesLine.FindSet() then
             repeat
