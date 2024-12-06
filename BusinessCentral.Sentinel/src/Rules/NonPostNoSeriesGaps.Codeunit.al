@@ -1,6 +1,7 @@
 namespace STM.BusinessCentral.Sentinel;
 
 using Microsoft.Foundation.NoSeries;
+using Microsoft.Projects.Project.Setup;
 using Microsoft.Purchases.Setup;
 using Microsoft.Sales.Setup;
 using STM.BusinessCentral.Sentinel;
@@ -12,6 +13,7 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         tabledata AlertSESTM = RI,
         tabledata "No. Series" = R,
         tabledata "No. Series Line" = R,
+        tabledata "Jobs Setup" = r,
         tabledata "Purchases & Payables Setup" = R,
         tabledata "Sales & Receivables Setup" = R;
 
@@ -19,6 +21,7 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
     begin
         CheckSalesSetup();
         CheckPurchaseSetup();
+        CheckJobsSetup();
     end;
 
     local procedure CheckPurchaseSetup()
@@ -59,6 +62,19 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         CheckNoSeries(SalesSetup."Fin. Chrg. Memo Nos.");
         CheckNoSeries(SalesSetup."Direct Debit Mandate Nos.");
         CheckNoSeries(SalesSetup."Price List Nos.");
+    end;
+
+    local procedure CheckJobsSetup()
+    var
+        JobsSetup: Record "Jobs Setup";
+    begin
+        JobsSetup.ReadIsolation(IsolationLevel::ReadUncommitted);
+        JobsSetup.SetLoadFields("Job Nos.", "Price List Nos.");
+        if not JobsSetup.Get() then
+            exit;
+
+        CheckNoSeries(JobsSetup."Job Nos.");
+        CheckNoSeries(JobsSetup."Price List Nos.");
     end;
 
     local procedure CheckNoSeries(NoSeriesCode: Code[20])
