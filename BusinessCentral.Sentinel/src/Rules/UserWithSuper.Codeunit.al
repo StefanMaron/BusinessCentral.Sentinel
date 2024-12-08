@@ -41,7 +41,7 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
                             AreaSESTM::Permissions,
                             StrSubstNo(LongDescLbl, User."User Name", AccessControl."Company Name"),
                             StrSubstNo(ActionRecommendationLbl, User."User Name", AccessControl."Company Name"),
-                            CreateUniqueIdentifier(AccessControl)
+                            this.CreateUniqueIdentifier(AccessControl)
                         );
                     until AccessControl.Next() = 0;
             until User.Next() = 0;

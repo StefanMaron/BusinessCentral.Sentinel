@@ -11,17 +11,17 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
     Access = Internal;
     Permissions =
         tabledata AlertSESTM = RI,
+        tabledata "Jobs Setup" = r,
         tabledata "No. Series" = R,
         tabledata "No. Series Line" = R,
-        tabledata "Jobs Setup" = r,
         tabledata "Purchases & Payables Setup" = R,
         tabledata "Sales & Receivables Setup" = R;
 
     procedure CreateAlerts()
     begin
-        CheckSalesSetup();
-        CheckPurchaseSetup();
-        CheckJobsSetup();
+        this.CheckSalesSetup();
+        this.CheckPurchaseSetup();
+        this.CheckJobsSetup();
     end;
 
     local procedure CheckPurchaseSetup()
@@ -33,14 +33,14 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         if not PurchaseSetup.Get() then
             exit;
 
-        CheckNoSeries(PurchaseSetup."Order Nos.");
-        CheckNoSeries(PurchaseSetup."Invoice Nos.");
-        CheckNoSeries(PurchaseSetup."Credit Memo Nos.");
-        CheckNoSeries(PurchaseSetup."Quote Nos.");
-        CheckNoSeries(PurchaseSetup."Vendor Nos.");
-        CheckNoSeries(PurchaseSetup."Blanket Order Nos.");
-        CheckNoSeries(PurchaseSetup."Price List Nos.");
-        CheckNoSeries(PurchaseSetup."Return Order Nos.");
+        this.CheckNoSeries(PurchaseSetup."Order Nos.");
+        this.CheckNoSeries(PurchaseSetup."Invoice Nos.");
+        this.CheckNoSeries(PurchaseSetup."Credit Memo Nos.");
+        this.CheckNoSeries(PurchaseSetup."Quote Nos.");
+        this.CheckNoSeries(PurchaseSetup."Vendor Nos.");
+        this.CheckNoSeries(PurchaseSetup."Blanket Order Nos.");
+        this.CheckNoSeries(PurchaseSetup."Price List Nos.");
+        this.CheckNoSeries(PurchaseSetup."Return Order Nos.");
     end;
 
     local procedure CheckSalesSetup()
@@ -52,16 +52,16 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         if not SalesSetup.Get() then
             exit;
 
-        CheckNoSeries(SalesSetup."Order Nos.");
-        CheckNoSeries(SalesSetup."Invoice Nos.");
-        CheckNoSeries(SalesSetup."Credit Memo Nos.");
-        CheckNoSeries(SalesSetup."Quote Nos.");
-        CheckNoSeries(SalesSetup."Customer Nos.");
-        CheckNoSeries(SalesSetup."Blanket Order Nos.");
-        CheckNoSeries(SalesSetup."Reminder Nos.");
-        CheckNoSeries(SalesSetup."Fin. Chrg. Memo Nos.");
-        CheckNoSeries(SalesSetup."Direct Debit Mandate Nos.");
-        CheckNoSeries(SalesSetup."Price List Nos.");
+        this.CheckNoSeries(SalesSetup."Order Nos.");
+        this.CheckNoSeries(SalesSetup."Invoice Nos.");
+        this.CheckNoSeries(SalesSetup."Credit Memo Nos.");
+        this.CheckNoSeries(SalesSetup."Quote Nos.");
+        this.CheckNoSeries(SalesSetup."Customer Nos.");
+        this.CheckNoSeries(SalesSetup."Blanket Order Nos.");
+        this.CheckNoSeries(SalesSetup."Reminder Nos.");
+        this.CheckNoSeries(SalesSetup."Fin. Chrg. Memo Nos.");
+        this.CheckNoSeries(SalesSetup."Direct Debit Mandate Nos.");
+        this.CheckNoSeries(SalesSetup."Price List Nos.");
     end;
 
     local procedure CheckJobsSetup()
@@ -73,8 +73,8 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         if not JobsSetup.Get() then
             exit;
 
-        CheckNoSeries(JobsSetup."Job Nos.");
-        CheckNoSeries(JobsSetup."Price List Nos.");
+        this.CheckNoSeries(JobsSetup."Job Nos.");
+        this.CheckNoSeries(JobsSetup."Price List Nos.");
     end;
 
     local procedure CheckNoSeries(NoSeriesCode: Code[20])

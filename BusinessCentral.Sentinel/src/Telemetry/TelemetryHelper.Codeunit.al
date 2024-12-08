@@ -11,7 +11,7 @@ codeunit 71180284 "TelemetryHelperSESTM"
     var
         FeatureTelemetry: Codeunit "Feature Telemetry";
     begin
-        if not IsSaaS() then
+        if not this.IsSaaS() then
             exit;
 
         FeatureTelemetry.LogUptake(
@@ -25,7 +25,7 @@ codeunit 71180284 "TelemetryHelperSESTM"
     var
         FeatureTelemetry: Codeunit "Feature Telemetry";
     begin
-        if not IsSaaS() then
+        if not this.IsSaaS() then
             exit;
 
         FeatureTelemetry.LogError(
@@ -40,7 +40,7 @@ codeunit 71180284 "TelemetryHelperSESTM"
     var
         FeatureTelemetry: Codeunit "Feature Telemetry";
     begin
-        if not IsSaaS() then
+        if not this.IsSaaS() then
             exit;
 
         FeatureTelemetry.LogUsage(
@@ -54,7 +54,7 @@ codeunit 71180284 "TelemetryHelperSESTM"
     var
         FeatureTelemetry: Codeunit "Feature Telemetry";
     begin
-        if not IsSaaS() then
+        if not this.IsSaaS() then
             exit;
 
         FeatureTelemetry.LogUsage(

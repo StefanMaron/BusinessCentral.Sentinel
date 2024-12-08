@@ -5,6 +5,10 @@
 [Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.4.22...HEAD)
 
 **Changes:**
+- Added JobsSetup to NoSeries Checks Merge pull request [\#6](https://github.com/StefanMaron/BusinessCentral.Sentinel/pull/6) from [pri-kise](https://github.com/pri-kise)
+- Added Rule in Ruleset to make the `this.` rule a warning
+- Added Instructions for the Sentinel Tool on the Alert list
+- Improved documentation on Rule 1-3
 
 **Closed Issues:**
 - Improve Rule SE-000007, there where cases where the App Name was not shown, also display the App ID [\#7](https://github.com/StefanMaron/BusinessCentral.Sentinel/issues/7)

@@ -5,6 +5,8 @@ table 71180277 SentinelRuleSetSESTM
     Access = Internal;
     Caption = 'Sentinel Rule Set';
     DataClassification = CustomerContent;
+    DrillDownPageId = SentinelRuleSetSESTM;
+    LookupPageId = SentinelRuleSetSESTM;
 
     fields
     {

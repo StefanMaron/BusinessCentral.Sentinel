@@ -22,20 +22,20 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
         IntercompanyAPITok: Label 'a190e87b-2f59-4e14-a727-421877802768', Locked = true;
         ShopifyConnectorIdTok: Label 'ec255f57-31d0-4ca2-b751-f2fa7c745abb', Locked = true;
     begin
-        RaiseAlertIfExtensionIsUnused(ShopifyConnectorIdTok, 30102);
-        RaiseAlertIfExtensionIsUnused(AMCBankingTok, 20101);
-        RaiseAlertIfExtensionIsUnused(IntercompanyAPITok, 413);
-        RaiseAlertIfExtensionIsUnused(CloudMigrationTok);
-        RaiseAlertIfExtensionIsUnused(CloudMigrationApiTok);
-        RaiseAlertIfExtensionIsUnused(IntelligentCloudTok);
-        RaiseAlertIfExtensionIsUnused(CeridianPayrollTok, 1665);
+        this.RaiseAlertIfExtensionIsUnused(ShopifyConnectorIdTok, 30102);
+        this.RaiseAlertIfExtensionIsUnused(AMCBankingTok, 20101);
+        this.RaiseAlertIfExtensionIsUnused(IntercompanyAPITok, 413);
+        this.RaiseAlertIfExtensionIsUnused(CloudMigrationTok);
+        this.RaiseAlertIfExtensionIsUnused(CloudMigrationApiTok);
+        this.RaiseAlertIfExtensionIsUnused(IntelligentCloudTok);
+        this.RaiseAlertIfExtensionIsUnused(CeridianPayrollTok, 1665);
     end;
 
     local procedure RaiseAlertIfExtensionIsUnused(AppId: Text)
     var
         TablesToVerify: List of [Integer];
     begin
-        RaiseAlertIfExtensionIsUnused(AppId, TablesToVerify);
+        this.RaiseAlertIfExtensionIsUnused(AppId, TablesToVerify);
     end;
 
     local procedure RaiseAlertIfExtensionIsUnused(AppId: Text; TableToVerify: Integer)
@@ -43,7 +43,7 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
         TablesToVerify: List of [Integer];
     begin
         TablesToVerify.Add(TableToVerify);
-        RaiseAlertIfExtensionIsUnused(AppId, TablesToVerify);
+        this.RaiseAlertIfExtensionIsUnused(AppId, TablesToVerify);
     end;
 
     local procedure RaiseAlertIfExtensionIsUnused(AppId: Text; TablesToVerify: List of [Integer])

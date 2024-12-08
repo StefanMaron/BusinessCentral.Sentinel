@@ -13,11 +13,21 @@ page 71180275 AlertListSESTM
     SourceTable = AlertSESTM;
     UsageCategory = Lists;
 
-
     layout
     {
         area(Content)
         {
+            group(Instructions)
+            {
+                Caption = 'Instructions';
+
+                field(Usage; this.InstructionsLbl)
+                {
+                    Editable = false;
+                    MultiLine = true;
+                    ShowCaption = false;
+                }
+            }
             repeater(Group)
             {
                 field(Id; Rec.Id)
@@ -28,7 +38,7 @@ page 71180275 AlertListSESTM
                 {
                     AboutText = 'The code representing the type of alert. You may see more than one alert with the same code if the same issue is detected multiple times.';
                     AboutTitle = 'Alert Code';
-                    StyleExpr = SeverityStyle;
+                    StyleExpr = this.SeverityStyle;
                 }
                 field("Short Description"; Rec."ShortDescription")
                 {
@@ -134,7 +144,7 @@ page 71180275 AlertListSESTM
             {
                 Caption = 'More Details';
                 Ellipsis = true;
-                Image = ViewDetails;
+                Image = LaunchWeb;
                 Scope = Repeater;
                 ToolTip = 'Show more details about this alert.';
 
@@ -160,6 +170,22 @@ page 71180275 AlertListSESTM
                 begin
                     IAuditAlert := Rec.AlertCode;
                     IAuditAlert.AutoFix(Rec);
+                end;
+            }
+            action(ShowRelatedInformation)
+            {
+                Caption = 'Show Related Information';
+                Ellipsis = true;
+                Image = ViewDetails;
+                Scope = Repeater;
+                ToolTip = 'Show related information about this alert.';
+
+                trigger OnAction()
+                var
+                    IAuditAlert: Interface IAuditAlertSESTM;
+                begin
+                    IAuditAlert := Rec.AlertCode;
+                    IAuditAlert.ShowRelatedInformation(Rec);
                 end;
             }
         }
@@ -189,11 +215,13 @@ page 71180275 AlertListSESTM
                 actionref(ClearIgnore_Promoted; ClearIgnore) { }
             }
             actionref(MoreDetails_Promoted; MoreDetails) { }
+            actionref(ShowRelatedInformation_Promoted; ShowRelatedInformation) { }
             actionref(AutoFix_Promoted; AutoFix) { }
         }
     }
 
     var
+        InstructionsLbl: Label 'This page shows a list of all alerts that have been found for your environment.\Its important to understand that those alerts are recommendations and should be reviewed before taking any action.\Not all alerts may be relevant to your environment or your business processes.\\You can collapse this message by a click on "Instructions" above.';
         SeverityStyle: Text;
 
     trigger OnOpenPage()
@@ -205,13 +233,13 @@ page 71180275 AlertListSESTM
     begin
         case Rec.Severity of
             SeveritySESTM::Info:
-                SeverityStyle := Format(PageStyle::StandardAccent);
+                this.SeverityStyle := Format(PageStyle::StandardAccent);
             SeveritySESTM::Warning:
-                SeverityStyle := Format(PageStyle::Ambiguous);
+                this.SeverityStyle := Format(PageStyle::Ambiguous);
             SeveritySESTM::Error:
-                SeverityStyle := Format(PageStyle::Attention);
+                this.SeverityStyle := Format(PageStyle::Attention);
             SeveritySESTM::Critical:
-                SeverityStyle := Format(PageStyle::Unfavorable);
+                this.SeverityStyle := Format(PageStyle::Unfavorable);
         end;
     end;
 

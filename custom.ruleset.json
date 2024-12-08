@@ -6,5 +6,12 @@
             "action": "Default",
             "path": "https://raw.githubusercontent.com/StefanMaron/RulesetFiles/main/appsource.rulset.json"
         }
+    ],
+    "rules": [
+        {
+            "id": "AA0248",
+            "action": "Warning",
+            "justification": "Add this where possible"
+        }
     ]
 }
