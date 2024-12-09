@@ -2,7 +2,12 @@
 
 ## [Unreleased](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/HEAD)
 
-[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.4.22...HEAD)
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.5.25...HEAD)
+
+
+## [1.5.25](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.5.25)
+
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.4.22...1.5.25)
 
 **Changes:**
 - Added JobsSetup to NoSeries Checks Merge pull request [\#6](https://github.com/StefanMaron/BusinessCentral.Sentinel/pull/6) from [pri-kise](https://github.com/pri-kise)
