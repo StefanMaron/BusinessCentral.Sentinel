@@ -61,20 +61,21 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
     begin
         Extensions.SetRange("App ID", AppId);
         Extensions.ReadIsolation(IsolationLevel::ReadUncommitted);
-        if not Extensions.IsEmpty() then begin
-            Company.SetRange("Evaluation Company", false);
-            if Company.FindSet() then
-                repeat
-                    foreach TableId in TablesToVerify do begin
-                        Clear(RecRef);
+        if Extensions.IsEmpty() then 
+            exit;
 
-                        RecRef.Open(TableId, false, Company.Name);
-                        if not RecRef.IsEmpty() then
-                            exit;
-                        RecRef.Close();
-                    end;
-                until Company.Next() = 0;
-        end;
+        Company.SetRange("Evaluation Company", false);
+        if Company.FindSet() then
+            repeat
+                foreach TableId in TablesToVerify do begin
+                    Clear(RecRef);
+
+                    RecRef.Open(TableId, false, Company.Name);
+                    if not RecRef.IsEmpty() then
+                        exit;
+                    RecRef.Close();
+                end;
+            until Company.Next() = 0;
 
         AppName := NavApp.GetModuleInfo(AppId, AppInfo) ? AppInfo.Name : '<unknown>';
 
