@@ -1,5 +1,22 @@
 {
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "StMaDev",
+            "type": "al",
+            "request": "launch",
+            "environmentType": "Sandbox",
+            "environmentName": "StMaDev",
+            "tenant": "14f62f77-ea18-443b-b103-09fd5deacbee",
+            "breakOnError": "All",
+            "breakOnRecordWrite": "None",
+            "startupObjectId": 71180275,
+            "launchBrowser": true,
+            "enableSqlInformationDebugger": true,
+            "enableLongRunningSqlStatements": true,
+            "longRunningSqlStatementsThreshold": 500,
+            "numberOfSqlStatements": 10,
+            "schemaUpdateMode": "ForceSync"
+        }
     ]
 }
