@@ -168,13 +168,13 @@ table 71180275 AlertSESTM
     /// <summary>
     /// This function is used to create a new alert in the system. It will only create the alert if it does not already exist.
     /// </summary>
-    /// <param name="AlertCodeIn"></param>
-    /// <param name="ShortDescriptionIn"></param>
-    /// <param name="SeverityIn"></param>
-    /// <param name="AreaIn"></param>
-    /// <param name="LongDescriptionIn"></param>
-    /// <param name="ActionRecommendationIn"></param>
-    /// <param name="UniqueIdentifierIn"></param>
+    /// <param name="AlertCodeIn">The alert code to create the alert for.</param>
+    /// <param name="ShortDescriptionIn">A brief description of what the issue is.</param>
+    /// <param name="SeverityIn">The severity of the alert</param>
+    /// <param name="AreaIn">The area of the alert.</param>
+    /// <param name="LongDescriptionIn">A longer description of what the issue is.</param>
+    /// <param name="ActionRecommendationIn">A description of how to resolve the issue.</param>
+    /// <param name="UniqueIdentifierIn">Any value that can distinguish different alerts within the same Alert code.</param>
     procedure New(AlertCodeIn: Enum "AlertCodeSESTM"; ShortDescriptionIn: Text; SeverityIn: Enum SeveritySESTM; AreaIn: Enum AreaSESTM; LongDescriptionIn: Text; ActionRecommendationIn: Text; UniqueIdentifierIn: Text[100])
     var
         Alert: Record AlertSESTM;
@@ -210,11 +210,16 @@ table 71180275 AlertSESTM
     var
         TelemetryHelper: Codeunit TelemetryHelperSESTM;
         CustomDimensions: Dictionary of [Text, Text];
+        Alert: Interface IAuditAlertSESTM;
     begin
-        CustomDimensions.Add('AlertCode', Format(Rec.AlertCode));
-        CustomDimensions.Add('Severity', Format(Rec.Severity));
-        CustomDimensions.Add('Area', Format(Rec."Area"));
+        CustomDimensions.Add('AlertSeverity', Format(Rec.Severity));
+        CustomDimensions.Add('AlertArea', Format(Rec."Area"));
+        Rec.CalcFields(Ignore);
+        CustomDimensions.Add('AlertIgnore', Format(Rec.Ignore));
 
-        TelemetryHelper.LogUsage(TelemetryFeaturesSESTM::SESTM0000001, 'Alert created for rule ' + Format(Rec.AlertCode), CustomDimensions);
+        Alert := Rec.AlertCode;
+        Alert.AddCustomTelemetryDimensions(Rec, CustomDimensions);
+
+        TelemetryHelper.LogUsage(Rec.AlertCode, Alert.GetTelemetryDescription(Rec), CustomDimensions);
     end;
 }

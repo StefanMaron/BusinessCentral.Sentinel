@@ -2,8 +2,16 @@
 
 ## [Unreleased](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/HEAD)
 
-[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.5.25...HEAD)
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.6.26...HEAD)
 
+- Improve telemetry logging for rules, change logging to daily, give option to disable logging, log to "All" instead of "ExtensionPublisher"
+- Improve Interface documentation
+
+## [1.6.26](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.6.26)
+
+[Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.5.25...1.6.26)
+
+- Next attempt to get Rule 7 fixed. It tried to insert alerts even if the extension was not installed.
 
 ## [1.5.25](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.5.25)
 

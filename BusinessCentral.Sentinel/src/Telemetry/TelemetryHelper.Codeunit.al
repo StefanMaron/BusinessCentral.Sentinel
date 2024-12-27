@@ -7,36 +7,7 @@ codeunit 71180284 "TelemetryHelperSESTM"
 {
     Access = Internal;
 
-    procedure LogUptake(Feature: Enum TelemetryFeaturesSESTM; FeatureStatus: Enum "Feature Uptake Status")
-    var
-        FeatureTelemetry: Codeunit "Feature Telemetry";
-    begin
-        if not this.IsSaaS() then
-            exit;
-
-        FeatureTelemetry.LogUptake(
-            Feature.Names().Get(Feature.AsInteger()),
-            Format(Feature),
-            FeatureStatus
-        );
-    end;
-
-    procedure LogError(Feature: Enum TelemetryFeaturesSESTM; EventName: Text; ErrorText: Text)
-    var
-        FeatureTelemetry: Codeunit "Feature Telemetry";
-    begin
-        if not this.IsSaaS() then
-            exit;
-
-        FeatureTelemetry.LogError(
-            Feature.Names().Get(Feature.AsInteger()),
-            Format(Feature),
-            EventName,
-            ErrorText
-        );
-    end;
-
-    procedure LogUsage(Feature: Enum TelemetryFeaturesSESTM; EventName: Text)
+    procedure LogUsage(Alert: Enum AlertCodeSESTM; Description: Text; CustomDimensions: Dictionary of [Text, Text])
     var
         FeatureTelemetry: Codeunit "Feature Telemetry";
     begin
@@ -44,23 +15,9 @@ codeunit 71180284 "TelemetryHelperSESTM"
             exit;
 
         FeatureTelemetry.LogUsage(
-            Feature.Names().Get(Feature.AsInteger()),
-            Format(Feature),
-            EventName
-        );
-    end;
-
-    procedure LogUsage(Feature: Enum TelemetryFeaturesSESTM; EventName: Text; CustomDimensions: Dictionary of [Text, Text])
-    var
-        FeatureTelemetry: Codeunit "Feature Telemetry";
-    begin
-        if not this.IsSaaS() then
-            exit;
-
-        FeatureTelemetry.LogUsage(
-            Feature.Names().Get(Feature.AsInteger()),
-            Format(Feature),
-            EventName,
+            Alert.Names().Get(Alert.AsInteger()),
+            Format(Alert),
+            Description,
             CustomDimensions
         );
     end;

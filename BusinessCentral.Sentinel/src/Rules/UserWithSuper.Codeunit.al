@@ -72,7 +72,22 @@ codeunit 71180280 UserWithSuperSESTM implements IAuditAlertSESTM
     end;
 
     procedure AutoFix(var Alert: Record AlertSESTM)
+    var
+        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000005)';
     begin
+        Message(NoAutofixAvailableLbl);
+    end;
 
+    procedure AddCustomTelemetryDimensions(var Alert: Record AlertSESTM; var CustomDimensions: Dictionary of [Text, Text])
+    begin
+        CustomDimensions.Add('AlertUserSecurityID', Alert."UniqueIdentifier".Split('/').Get(1));
+        CustomDimensions.Add('AlertCompanyName', Alert."UniqueIdentifier".Split('/').Get(3));
+    end;
+
+    procedure GetTelemetryDescription(var Alert: Record AlertSESTM): Text
+    var
+        ShortDescLbl: Label 'User with SUPER permissions found', Locked = true;
+    begin
+        exit(ShortDescLbl);
     end;
 }

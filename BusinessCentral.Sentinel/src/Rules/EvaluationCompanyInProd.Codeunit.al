@@ -60,10 +60,21 @@ codeunit 71180278 EvaluationCompanyInProdSESTM implements IAuditAlertSESTM
 
     procedure AutoFix(var Alert: Record AlertSESTM)
     var
-        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000001)';
+        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000003)';
     begin
         // The base BC logic that happens on delete company is on the page, and can not be reused
         // Therefore, the user has to use the ShowRelatedInformation to open the page and delete from there.
         Message(NoAutofixAvailableLbl);
+    end;
+
+    procedure AddCustomTelemetryDimensions(var Alert: Record AlertSESTM; var CustomDimensions: Dictionary of [Text, Text])
+    begin
+        CustomDimensions.Add('AlertCompanyName', Alert.ShortDescription);
+        CustomDimensions.Add('AlertCompanySystemId', Alert.UniqueIdentifier);
+    end;
+
+    procedure GetTelemetryDescription(var Alert: Record AlertSESTM): Text
+    begin
+        exit(Alert.LongDescription);
     end;
 }

@@ -53,8 +53,28 @@ codeunit 71180277 AlertDevScopeExtSESTM implements IAuditAlertSESTM
 
     procedure AutoFix(var Alert: Record AlertSESTM)
     var
-        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000001)';
+        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000002)';
     begin
         Message(NoAutofixAvailableLbl);
+    end;
+
+    procedure AddCustomTelemetryDimensions(var Alert: Record AlertSESTM; var CustomDimensions: Dictionary of [Text, Text])
+    var
+        Extensions: Record "NAV App Installed App";
+    begin
+        Extensions.SetLoadFields("Name", "App ID", Publisher, "Version Major", "Version Minor", "Version Build", "Version Revision");
+        Extensions.ReadIsolation(IsolationLevel::ReadUncommitted);
+        if not Extensions.Get(Alert.UniqueIdentifier) then
+            exit;
+
+        CustomDimensions.Add('AlertExtensionName', Extensions.Name);
+        CustomDimensions.Add('AlertAppID', Extensions."App ID");
+        CustomDimensions.Add('AlertPublisher', Extensions.Publisher);
+        CustomDimensions.Add('AlertAppVersion', StrSubstNo('%1.%2.%3.%4', Extensions."Version Major", Extensions."Version Minor", Extensions."Version Build", Extensions."Version Revision"));
+    end;
+
+    procedure GetTelemetryDescription(var Alert: Record AlertSESTM): Text
+    begin
+        exit(Alert.ShortDescription);
     end;
 }

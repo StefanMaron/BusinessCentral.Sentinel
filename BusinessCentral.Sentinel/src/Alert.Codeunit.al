@@ -28,4 +28,14 @@ codeunit 71180275 AlertSESTM implements IAuditAlertSESTM
     begin
 
     end;
+
+    procedure AddCustomTelemetryDimensions(var Alert: Record AlertSESTM; var CustomDimensions: Dictionary of [Text, Text])
+    begin
+
+    end;
+
+    procedure GetTelemetryDescription(var Alert: Record AlertSESTM): Text
+    begin
+
+    end;
 }

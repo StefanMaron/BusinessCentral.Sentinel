@@ -125,8 +125,22 @@ codeunit 71180281 NonPostNoSeriesGapsSESTM implements IAuditAlertSESTM
         Page.Run(Page::"No. Series", NoSeries);
     end;
 
-    procedure AutoFix(var Alert: Record AlertSESTM)
-    begin
 
+    procedure AutoFix(var Alert: Record AlertSESTM)
+    var
+        NoAutofixAvailableLbl: Label 'No autofix available for this alert. (SE-000006)';
+    begin
+        Message(NoAutofixAvailableLbl);
+        // TODO: Implement AutoFix
+    end;
+
+    procedure AddCustomTelemetryDimensions(var Alert: Record AlertSESTM; var CustomDimensions: Dictionary of [Text, Text])
+    begin
+        CustomDimensions.Add('AlertNoSeriesCode', Alert.UniqueIdentifier);
+    end;
+
+    procedure GetTelemetryDescription(var Alert: Record AlertSESTM): Text
+    begin
+        exit(Alert.ShortDescription);
     end;
 }
