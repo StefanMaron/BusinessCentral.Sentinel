@@ -16,7 +16,8 @@ table 71180275 AlertSESTM
     Permissions =
         tabledata AlertSESTM = RID,
         tabledata IgnoredAlertsSESTM = RID,
-        tabledata SentinelRuleSetSESTM = R;
+        tabledata SentinelRuleSetSESTM = R,
+        tabledata SentinelSetup = R;
 
     fields
     {
@@ -95,13 +96,19 @@ table 71180275 AlertSESTM
     }
 
     trigger OnInsert()
+    var
+        Setup: Record SentinelSetup;
     begin
         if not NumberSequence.Exists('BCSentinelSESTMAlertId') then
             NumberSequence.Insert('BCSentinelSESTMAlertId');
 
         Rec.Id := NumberSequence.Next('BCSentinelSESTMAlertId');
 
-        this.LogUsage();
+        Setup.SetLoadFields(Setup.TelemetryLogging);
+        Setup.ReadIsolation(IsolationLevel::ReadUncommitted);
+        Setup.SaveGet();
+        if Setup.TelemetryLogging = Setup.TelemetryLogging::OnRuleLogging then
+            this.LogUsage();
     end;
 
     procedure FindNewAlerts()

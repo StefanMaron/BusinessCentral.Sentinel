@@ -25,6 +25,7 @@ Get it on AppSource:
 | SE-000005| Inform about users with Super permissions | Permissions| Info |
 | SE-000006| Consider configuring non-posting number series to allow gaps to increase performance | Performance| Warning|
 | SE-000007| Extension installed but unused.| Performance| Warning|
+| SE-000008| Scheduled Analysis is not configured | Technical| Info|
 
 ## Documentation
 

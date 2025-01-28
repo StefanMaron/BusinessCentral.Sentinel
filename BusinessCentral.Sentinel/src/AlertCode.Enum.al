@@ -67,4 +67,12 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Caption = 'SE-000007';
         Implementation = IAuditAlertSESTM = UnusedExtensionInstalledSESTM;
     }
+    /// <summary>
+    /// Informs that the Alert analysis is not scheduled
+    /// </summary>
+    value(8; "SE-000008")
+    {
+        Caption = 'SE-000008';
+        Implementation = IAuditAlertSESTM = AnalysisNotScheduledSESTM;
+    }
 }
