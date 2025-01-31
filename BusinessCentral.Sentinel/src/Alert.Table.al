@@ -104,10 +104,7 @@ table 71180275 AlertSESTM
 
         Rec.Id := NumberSequence.Next('BCSentinelSESTMAlertId');
 
-        Setup.SetLoadFields(Setup.TelemetryLogging);
-        Setup.ReadIsolation(IsolationLevel::ReadUncommitted);
-        Setup.SaveGet();
-        if Setup.TelemetryLogging = Setup.TelemetryLogging::OnRuleLogging then
+        if Setup.GetTelemetryLoggingSetting(Rec.AlertCode) = Setup.TelemetryLogging::OnRuleLogging then
             this.LogUsage();
     end;
 
@@ -189,7 +186,8 @@ table 71180275 AlertSESTM
         CurrSeverity: Enum SeveritySESTM;
     begin
         SentinelRuleSet.ReadIsolation(IsolationLevel::ReadUncommitted);
-        if SentinelRuleSet.Get(AlertCodeIn) then
+
+        if SentinelRuleSet.Get(AlertCodeIn) and (SentinelRuleSet.Severity <> SentinelRuleSet.Severity::" ") then
             CurrSeverity := SentinelRuleSet.Severity
         else
             CurrSeverity := SeverityIn;

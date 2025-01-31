@@ -1,22 +1,23 @@
 namespace STM.BusinessCentral.Sentinel;
 
-page 71180277 SentinelRuleSetSESTM
+page 71180278 SentinelSetup
 {
     ApplicationArea = All;
-    Caption = 'Sentinel Rule Set';
+    Caption = 'Sentinel Setup';
+    DeleteAllowed = false;
     Extensible = false;
-    PageType = List;
-    SourceTable = SentinelRuleSetSESTM;
+    PageType = Card;
+    SourceTable = SentinelSetup;
     UsageCategory = Administration;
 
     layout
     {
         area(Content)
         {
-            repeater(Main)
+            group(General)
             {
-                field(AlertCode; Rec.AlertCode) { }
-                field(Severity; Rec.Severity) { }
+                Caption = 'General';
+
                 field(TelemetryLogging; Rec.TelemetryLogging) { }
             }
         }

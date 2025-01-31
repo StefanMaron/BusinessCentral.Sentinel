@@ -21,6 +21,11 @@ table 71180277 SentinelRuleSetSESTM
             Caption = 'Severity';
             ToolTip = 'The severity level of the alert.';
         }
+        field(4; TelemetryLogging; Enum TelemetryLogging)
+        {
+            Caption = 'Telemetry Logging';
+            ToolTip = 'Specifies how sentinel emits telemetry data.';
+        }
     }
 
     keys

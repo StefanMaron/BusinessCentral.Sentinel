@@ -5,6 +5,8 @@
 [Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.6.26...HEAD)
 
 - Improve telemetry logging for rules, change logging to daily, give option to disable logging, log to "All" instead of "ExtensionPublisher"
+- Ability to completely turn off telemetry
+- Ability to control telemetry via ruleset per Alert individually
 - Improve Interface documentation
 
 ## [1.6.26](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/1.6.26)

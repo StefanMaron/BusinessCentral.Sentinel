@@ -5,6 +5,10 @@ enum 71180276 SeveritySESTM
     Access = Internal;
     Extensible = false;
 
+    value(0; " ")
+    {
+        Caption = ' ', Locked = true;
+    }
     value(1; Info)
     {
         Caption = 'Info';

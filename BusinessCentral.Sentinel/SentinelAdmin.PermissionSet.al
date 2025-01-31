@@ -18,6 +18,7 @@ permissionset 71180275 SentinelAdminSESTM
         codeunit AlertDevScopeExtSESTM = X,
         codeunit AlertPteDownloadCodeSESTM = X,
         codeunit AlertSESTM = X,
+        codeunit AnalysisNotScheduledSESTM = X,
         codeunit DemoDataExtInProdSESTM = X,
         codeunit EvaluationCompanyInProdSESTM = X,
         codeunit NonPostNoSeriesGapsSESTM = X,
@@ -28,5 +29,5 @@ permissionset 71180275 SentinelAdminSESTM
         codeunit UserWithSuperSESTM = X,
         page AlertListSESTM = X,
         page SentinelRuleSetSESTM = X,
-        codeunit AnalysisNotScheduledSESTM = X;
+        page SentinelSetup = X;
 }
