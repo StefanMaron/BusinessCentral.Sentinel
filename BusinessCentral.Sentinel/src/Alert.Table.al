@@ -9,6 +9,7 @@ table 71180275 AlertSESTM
 {
     Access = Internal;
     Caption = 'Alert';
+    DataCaptionFields = AlertCode;
     DataClassification = SystemMetadata;
     DrillDownPageId = AlertListSESTM;
     Extensible = false;

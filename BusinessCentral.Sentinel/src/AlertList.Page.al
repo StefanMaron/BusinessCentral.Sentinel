@@ -7,6 +7,7 @@ page 71180275 AlertListSESTM
     AdditionalSearchTerms = 'Sentinel';
     ApplicationArea = All;
     Caption = 'Sentinel Alerts';
+    CardPageId = AlertCard;
     Editable = false;
     Extensible = false;
     PageType = List;
@@ -44,26 +45,9 @@ page 71180275 AlertListSESTM
                 {
                     AboutText = 'A brief description of the alert. Click on the field to see the full explanation.';
                     AboutTitle = 'Short Description';
-                    MultiLine = true;
                 }
-                field(LongDescription; Rec.LongDescription)
-                {
-                    AboutText = 'A more detailed description of the alert. Click on the field to see the full explanation.';
-                    AboutTitle = 'Long Description';
-                    MultiLine = true;
-                }
-                field(Severity; Rec.Severity)
-                {
-                }
-                field("Area"; Rec."Area")
-                {
-                }
-                field(ActionRecommendation; Rec.ActionRecommendation)
-                {
-                    AboutText = 'Recommended actions to take in response to the alert. Depending on the alert, you may be able to run an action to fix the issue.';
-                    AboutTitle = 'Action Recommendation';
-                    MultiLine = true;
-                }
+                field(Severity; Rec.Severity) { }
+                field("Area"; Rec."Area") { }
                 field(Ignore; Rec.Ignore)
                 {
                     AboutText = 'Indicates whether the alert has been marked as ignored. Ignored alerts will be excluded from reports and queues on the Role Center.';

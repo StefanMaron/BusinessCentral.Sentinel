@@ -27,6 +27,7 @@ permissionset 71180275 SentinelAdminSESTM
         codeunit TelemetryHelperSESTM = X,
         codeunit UnusedExtensionInstalledSESTM = X,
         codeunit UserWithSuperSESTM = X,
+        page AlertCard = X,
         page AlertListSESTM = X,
         page SentinelRuleSetSESTM = X,
         page SentinelSetup = X;
