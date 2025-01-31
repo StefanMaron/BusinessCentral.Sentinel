@@ -10,8 +10,8 @@ codeunit 71180287 AnalysisNotScheduledSESTM implements IAuditAlertSESTM
 
     procedure CreateAlerts()
     var
-        JobQueueEntry: Record "Job Queue Entry";
         Alert: Record AlertSESTM;
+        JobQueueEntry: Record "Job Queue Entry";
         ActionRecommendationLbl: Label 'Create a Job Queue Entry to run the Scheduled Alert Analysis.';
         LongDescLbl: Label 'Scheduled Alert Analysis is not scheduled to run. This means that the alerts are not being evaluated and the system is not being monitored for potential issues.';
         ShotDescLbl: Label 'Scheduled Alert Analysis is not scheduled to run.';
@@ -37,7 +37,6 @@ codeunit 71180287 AnalysisNotScheduledSESTM implements IAuditAlertSESTM
         JobQueueEntry.Init();
         JobQueueEntry.Validate("Object Type to Run", JobQueueEntry."Object Type to Run"::Codeunit);
         JobQueueEntry.Validate("Object ID to Run", Codeunit::"ReRunAllAlerts");
-        JobQueueEntry.Validate("Earliest Start Date/Time", CreateDateTime(Today() + 1, 0T));
         Evaluate(JobQueueEntry."Next Run Date Formula", '<1D>');
         JobQueueEntry.Validate("Next Run Date Formula");
         JobQueueEntry.Validate("Status", JobQueueEntry."Status"::Ready);
@@ -49,6 +48,9 @@ codeunit 71180287 AnalysisNotScheduledSESTM implements IAuditAlertSESTM
         JobQueueEntry.Validate("Run on Fridays", true);
         JobQueueEntry.Validate("Run on Saturdays", true);
         JobQueueEntry.Validate("Run on Sundays", true);
+
+        // This Validate will insert the Job Queue Entry
+        JobQueueEntry.Validate("Earliest Start Date/Time", CreateDateTime(Today() + 1, 0T));
         JobQueueEntry.Insert(true);
     end;
 
