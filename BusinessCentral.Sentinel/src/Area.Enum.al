@@ -26,3 +26,4 @@ enum 71180277 AreaSESTM
     {
         Caption = 'Configuration';
     }
+}
