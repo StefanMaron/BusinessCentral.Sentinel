@@ -24,6 +24,5 @@ enum 71180277 AreaSESTM
 
     value(5; Configuration)
     {
-        Caption = 'Configuration'
+        Caption = 'Configuration';
     }
-}
