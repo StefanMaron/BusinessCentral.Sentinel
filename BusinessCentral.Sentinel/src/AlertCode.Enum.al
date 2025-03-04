@@ -75,4 +75,11 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Caption = 'SE-000008';
         Implementation = IAuditAlertSESTM = AnalysisNotScheduledSESTM;
     }
+
+    value(9; "SE-000009")
+    {
+        Caption = 'SE-000009';
+        Implementation = IAuditAlertSESTM = GLPostingFieldsCheckSESTM;
+
+    }
 }
