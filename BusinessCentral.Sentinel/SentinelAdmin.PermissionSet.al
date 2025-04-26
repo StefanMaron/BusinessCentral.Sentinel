@@ -30,5 +30,6 @@ permissionset 71180275 SentinelAdminSESTM
         page AlertCard = X,
         page AlertListSESTM = X,
         page SentinelRuleSetSESTM = X,
-        page SentinelSetup = X;
+        page SentinelSetup = X,
+        codeunit GLPostingFieldsCheckSESTM = X;
 }
