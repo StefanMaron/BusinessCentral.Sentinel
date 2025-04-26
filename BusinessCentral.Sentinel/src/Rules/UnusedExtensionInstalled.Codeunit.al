@@ -21,6 +21,8 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
         IntelligentCloudTok: Label '334ef79e-547e-4631-8ba1-7a7f18e14de6', Locked = true;
         IntercompanyAPITok: Label 'a190e87b-2f59-4e14-a727-421877802768', Locked = true;
         ShopifyConnectorIdTok: Label 'ec255f57-31d0-4ca2-b751-f2fa7c745abb', Locked = true;
+        DynamicsSlMigrationIdTok: Label '237981b4-9e3c-437c-9b92-988aae978e8f', Locked = true;
+        SubscriptionBillingIdTok: Label '3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c', Locked = true;
     begin
         this.RaiseAlertIfExtensionIsUnused(ShopifyConnectorIdTok, 30102);
         this.RaiseAlertIfExtensionIsUnused(AMCBankingTok, 20101);
@@ -28,7 +30,9 @@ codeunit 71180283 UnusedExtensionInstalledSESTM implements IAuditAlertSESTM
         this.RaiseAlertIfExtensionIsUnused(CloudMigrationTok);
         this.RaiseAlertIfExtensionIsUnused(CloudMigrationApiTok);
         this.RaiseAlertIfExtensionIsUnused(IntelligentCloudTok);
+        this.RaiseAlertIfExtensionIsUnused(DynamicsSlMigrationIdTok);
         this.RaiseAlertIfExtensionIsUnused(CeridianPayrollTok, 1665);
+        this.RaiseAlertIfExtensionIsUnused(SubscriptionBillingIdTok, 8053);
     end;
 
     local procedure RaiseAlertIfExtensionIsUnused(AppId: Text)
