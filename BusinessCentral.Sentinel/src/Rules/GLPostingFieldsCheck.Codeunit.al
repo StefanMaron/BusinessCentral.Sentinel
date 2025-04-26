@@ -14,7 +14,7 @@ codeunit 71180300 GLPostingFieldsCheckSESTM implements IAuditAlertSESTM
         Alert: Record AlertSESTM;
         GeneralLedgerSetup: Record "General Ledger Setup";
         ActionRecommendationLbl: Label 'Ensure that an appropriate date value is entered in both the "Allow Posting From" and "Allow Posting To" fields on the General Ledger Setup page.';
-        LongDescLbl: Label 'The "Allow Posting From" and/or the "Allow Posting To" date does not have a value in the General Ledger Setup page.  Both of these dates should always be populated to ensure that transactions are not accidentally posted to a prior fiscal period or future fiscal period.  These dates restrict posting for all users in the Company.  User specific allowed posting dates can be set on the User Setup page.';
+        LongDescLbl: Label 'The "Allow Posting From" and/or the "Allow Posting To" date does not have a value in the General Ledger Setup page. Both of these dates should always be populated to ensure that transactions are not accidentally posted to a prior fiscal period or future fiscal period. These dates restrict posting for all users in the Company. User specific allowed posting dates can be set on the User Setup page.';
         ShortDescLbl: Label 'Verify that General Ledger Setup "Allow Posting" date fields are configured';
     begin
         GeneralLedgerSetup.ReadIsolation(IsolationLevel::ReadUncommitted);
@@ -28,7 +28,7 @@ codeunit 71180300 GLPostingFieldsCheckSESTM implements IAuditAlertSESTM
                 AreaSESTM::Configuration,
                 LongDescLbl,
                 ActionRecommendationLbl,
-               ''
+               'NoDatesSet'
             )
         else
             this.GenerateSecondAlert();
@@ -85,7 +85,7 @@ codeunit 71180300 GLPostingFieldsCheckSESTM implements IAuditAlertSESTM
             AreaSESTM::Configuration,
             StrSubstNo(LongDesc2Lbl, FieldName, DateValue, Duration),
             StrSubstNo(ActionRecommendation2Lbl, FieldName),
-            ''
+            'LongPostingDuration'
         );
     end;
 

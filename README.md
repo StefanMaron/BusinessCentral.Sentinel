@@ -26,6 +26,7 @@ Get it on AppSource:
 | SE-000006| Consider configuring non-posting number series to allow gaps to increase performance | Performance| Warning|
 | SE-000007| Extension installed but unused.| Performance| Warning|
 | SE-000008| Scheduled Analysis is not configured | Technical| Info|
+| SE-000009| Verify G/L Setup Posting Dates are configured | Technical| Info|
 
 ## Documentation
 
