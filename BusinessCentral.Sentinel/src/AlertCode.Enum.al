@@ -76,7 +76,7 @@ enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
         Implementation = IAuditAlertSESTM = AnalysisNotScheduledSESTM;
     }
     /// <summary>
-    /// Checks for direct posting on G/L Accounts used in posting groups and setup tables
+    /// Checks for "Direct posting" disabled for G/L Accounts used in posting groups and setup tables
     /// </summary>
     value(9; "SE-000009")
     {

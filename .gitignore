@@ -23,4 +23,3 @@ cache_*
 .gitignore
 .vscode/settings.json
 logo.png
-# BusinessCentral.Sentinel/.vscode/launch.json
