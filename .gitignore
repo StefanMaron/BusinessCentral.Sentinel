@@ -19,3 +19,8 @@ rad.json
 .snapshots/
 cache_*
 ~$*
+.vscode/launch.json
+.gitignore
+.vscode/settings.json
+logo.png
+# BusinessCentral.Sentinel/.vscode/launch.json
