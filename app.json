@@ -1,0 +1,34 @@
+{
+  "id": "1aba0d21-e0f6-45c2-8d46-b7a4f155d66a",
+  "name": "BusinessCentral.Sentinel",
+  "publisher": "Stefan Maron Consulting",
+  "version": "1.9.0.1",
+  "brief": "BusinessCentral.Sentinel is an intelligent monitoring and advisory tool designed for Microsoft Dynamics 365 Business Central users. It provides real-time insights, proactive alerts, and actionable recommendations to enhance operational efficiency, reduce risks, and optimize decision-making. This app acts as a vigilant 'sentinel' for your business, ensuring key processes run smoothly and critical issues are addressed promptly. From financial anomalies to inventory mismatches, BusinessCentral.Sentinel empowers users with the oversight they need to stay ahead in a dynamic business environment.",
+  "description": "BusinessCentral.Sentinel is a robust application designed to monitor, analyze, and guide business operations within Microsoft Dynamics 365 Business Central. It provides real-time alerts, actionable recommendations, and customizable rules to ensure you are always informed about critical business aspects such as overdue payments, low stock levels, or unbalanced financial entries. The tool features intuitive visual dashboards displaying key performance indicators and insights at a glance. Built specifically for Dynamics 365 Business Central, it integrates seamlessly into your workflows, offering managers, finance teams, and operational staff reliable oversight and decision-making support. BusinessCentral.Sentinel empowers businesses to proactively manage risks, optimize efficiency, and make informed decisions faster.",
+  "contextSensitiveHelpUrl": "https://github.com/StefanMaron/BusinessCentral.Sentinel/issues",
+  "privacyStatement": "https://stefanmaron.com/privacystatement/",
+  "EULA": "https://stefanmaron.com/eula/",
+  "help": "https://github.com/StefanMaron/BusinessCentral.Sentinel/issues",
+  "url": "https://github.com/StefanMaron/BusinessCentral.Sentinel",
+  "logo": "logo.png",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "25.0.0.0",
+  "idRanges": [
+    {
+      "from": 71180275,
+      "to": 71180574
+    }
+  ],
+  "features": [
+    "NoImplicitWith",
+    "TranslationFile"
+  ],
+  "runtime": "14.0",
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  }
+}

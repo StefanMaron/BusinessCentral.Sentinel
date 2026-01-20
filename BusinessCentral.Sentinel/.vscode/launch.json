@@ -1,0 +1,58 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+//         {
+//             "name": "StMaDev",
+//             "type": "al",
+//             "request": "launch",
+//             "environmentType": "Sandbox",
+//             "environmentName": "StMaDev",
+//             "tenant": "14f62f77-ea18-443b-b103-09fd5deacbee",
+//             "breakOnError": "All",
+//             "breakOnRecordWrite": "None",
+//             "startupObjectId": 71180275,
+//             "launchBrowser": true,
+//             "enableSqlInformationDebugger": true,
+//             "enableLongRunningSqlStatements": true,
+//             "longRunningSqlStatementsThreshold": 500,
+//             "numberOfSqlStatements": 10,
+//             "schemaUpdateMode": "ForceSync"
+//         }
+// ,
+        {
+            "name": "Wanamics Development",
+            "request": "launch",
+            "type": "al",
+            "server": "https://businesscentral.dynamics.com/",
+            "environmentType": "Sandbox",
+            "environmentName": "Development",
+            "tenant": "e58e4362-4ba1-46f8-b9da-326a8fa42dc7",
+            "port": 7049,
+            "authentication": "AAD",
+            "startupObjectType": "Page",
+            "startupObjectId": 71180275,
+            // "schemaUpdateMode": "ForceSync",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true
+        }
+        ,
+        {
+            "name": "SYN Development",
+            "request": "launch",
+            "server": "https://businesscentral.dynamics.com/",
+            "tenant": "7976175f-bf14-44d1-a0fb-d1307bebb8be",
+            "type": "al",
+            "environmentType": "Sandbox",
+            "environmentName": "DevSyneido",
+            "startupObjectType": "Page",
+            "startupObjectId": 71180275,
+            //"schemaUpdateMode": "ForceSync",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true
+        }
+    ]
+}
