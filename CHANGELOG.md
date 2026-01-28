@@ -4,6 +4,8 @@
 
 [Full Changelog](https://github.com/StefanMaron/BusinessCentral.Sentinel/compare/1.7.33...HEAD)
 
+**Changes:**
+- Added rule SE-000009 to check G/L Account used in Posting groups setup should not be **Direct Posting** allowed
 
 
 ## [1.7.33](https://github.com/StefanMaron/BusinessCentral.Sentinel/tree/HEAD)
