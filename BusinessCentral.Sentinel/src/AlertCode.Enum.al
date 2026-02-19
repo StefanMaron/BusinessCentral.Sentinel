@@ -2,9 +2,8 @@ namespace STM.BusinessCentral.Sentinel;
 
 enum 71180275 "AlertCodeSESTM" implements IAuditAlertSESTM
 {
-    Access = Internal;
     DefaultImplementation = IAuditAlertSESTM = AlertSESTM;
-    Extensible = false;
+    Extensible = true;
     UnknownValueImplementation = IAuditAlertSESTM = AlertSESTM;
 
     value(0; " ")

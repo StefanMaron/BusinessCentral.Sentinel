@@ -7,12 +7,12 @@ using STM.BusinessCentral.Sentinel;
 /// </summary>
 table 71180275 AlertSESTM
 {
-    Access = Internal;
+    Access = Public;
     Caption = 'Alert';
     DataCaptionFields = AlertCode;
     DataClassification = SystemMetadata;
     DrillDownPageId = AlertListSESTM;
-    Extensible = false;
+    Extensible = true;
     LookupPageId = AlertListSESTM;
     Permissions =
         tabledata AlertSESTM = RID,
@@ -117,8 +117,6 @@ table 71180275 AlertSESTM
     begin
         foreach currOrdinal in Enum::AlertCodeSESTM.Ordinals() do
             AlertsToRun.Add(Enum::AlertCodeSESTM.FromInteger(currOrdinal));
-
-        // TODO: add event to allow other extensions to add Alerts
 
         foreach Alert in AlertsToRun do
             Alert.CreateAlerts();

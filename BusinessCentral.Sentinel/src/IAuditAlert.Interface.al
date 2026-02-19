@@ -2,8 +2,6 @@ namespace STM.BusinessCentral.Sentinel;
 
 interface IAuditAlertSESTM
 {
-    Access = Internal;
-
     /// <summary>
     /// This procedure should be used to create alerts. It should determine any alerts for a rule and create the records in the alert table.
     /// Use `Alert.New()` to create a new alert.
