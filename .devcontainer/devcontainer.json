@@ -1,0 +1,21 @@
+{
+    "name": "BC Sentinel - Claude Code",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+    "features": {
+        "ghcr.io/stefanmaron/claudeCodeAlDevContainer/claude-code:latest": {}
+    },
+    "remoteUser": "vscode",
+    "mounts": [
+        "source=claude-code-config,target=/home/vscode/.claude,type=volume",
+        "source=claude-code-data,target=/home/vscode/.local/share/claude,type=volume"
+    ],
+    "containerEnv": {
+        "GIT_TERMINAL_PROMPT": "0",
+        "SSH_AUTH_SOCK": "",
+        "GIT_ASKPASS": "/bin/false",
+        "GH_TOKEN": "",
+        "GITHUB_TOKEN": ""
+    },
+    "postStartCommand": "sudo git config --system credential.helper ''",
+    "postCreateCommand": "echo '{\"hasCompletedOnboarding\":true,\"numStartups\":1,\"installMethod\":\"native\"}' > /home/vscode/.claude.json"
+}
