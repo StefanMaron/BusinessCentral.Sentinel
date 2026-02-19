@@ -14,8 +14,10 @@
         "SSH_AUTH_SOCK": "",
         "GIT_ASKPASS": "/bin/false",
         "GH_TOKEN": "",
-        "GITHUB_TOKEN": ""
+        "GITHUB_TOKEN": "",
+        "GIT_CONFIG_COUNT": "1",
+        "GIT_CONFIG_KEY_0": "credential.helper",
+        "GIT_CONFIG_VALUE_0": "/bin/false"
     },
-    "postStartCommand": "sudo git config --system credential.helper ''",
     "postCreateCommand": "echo '{\"hasCompletedOnboarding\":true,\"numStartups\":1,\"installMethod\":\"native\"}' > /home/vscode/.claude.json"
 }
