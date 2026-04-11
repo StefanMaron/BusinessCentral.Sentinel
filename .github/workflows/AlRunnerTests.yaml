@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 
@@ -37,7 +37,7 @@ jobs:
           al-runner --help | head -1
 
       - name: Cache al-runner BC service tier DLLs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.msdyn365bc.al.runner
           key: al-runner-bc-dlls-${{ env.AL_RUNNER_VERSION }}-v1
@@ -94,14 +94,14 @@ jobs:
 
       - name: Upload JSON results
         if: always() && hashFiles('al-results.json') != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: al-runner-results
           path: al-results.json
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: cobertura.xml
