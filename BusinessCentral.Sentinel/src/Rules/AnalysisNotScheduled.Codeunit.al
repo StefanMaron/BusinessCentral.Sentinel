@@ -62,10 +62,8 @@ codeunit 71180287 AnalysisNotScheduledSESTM implements IAuditAlertSESTM
     end;
 
     procedure ShowRelatedInformation(var Alert: Record AlertSESTM)
-    var
-        JobQueueEntriesPage: Page "Job Queue Entries";
     begin
-        JobQueueEntriesPage.Run();
+        Page.Run(Page::"Job Queue Entries");
     end;
 
     procedure AutoFix(var Alert: Record AlertSESTM)

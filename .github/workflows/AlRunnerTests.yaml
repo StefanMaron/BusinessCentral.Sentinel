@@ -1,0 +1,121 @@
+name: AL Runner Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: al-runner-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned al-runner version. Bump explicitly after verifying each new release
+  # against the Sentinel suite locally — see BusinessCentral.Sentinel.Test/.
+  AL_RUNNER_VERSION: '1.0.3'
+
+jobs:
+  run-tests:
+    name: Run al-runner unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install al-runner ${{ env.AL_RUNNER_VERSION }}
+        run: |
+          dotnet tool install --global msdyn365bc.al.runner --version "$AL_RUNNER_VERSION"
+          al-runner --help | head -1
+
+      - name: Cache al-runner BC service tier DLLs
+        uses: actions/cache@v4
+        with:
+          path: ~/.msdyn365bc.al.runner
+          key: al-runner-bc-dlls-${{ env.AL_RUNNER_VERSION }}-v1
+
+      - name: Run unit tests
+        id: tests
+        continue-on-error: true
+        run: |
+          # al-runner 1.0.2+ treats `--stubs` as an override for objects
+          # loaded via `--packages`, not as a stand-in for missing deps.
+          # Passing src + stubs + tests as a flat file-list works around that.
+          set -o pipefail
+          al-runner --coverage --output-json \
+            $(find \
+                BusinessCentral.Sentinel/src \
+                BusinessCentral.Sentinel.Test/stubs \
+                BusinessCentral.Sentinel.Test/src \
+                -name '*.al') \
+            > al-results.json
+          cat al-results.json | jq -r '"Tests: \(.passed)/\(.total) passed (\(.failed) failed, \(.errors) errors)"'
+
+      - name: Write job summary
+        if: always() && hashFiles('al-results.json') != ''
+        run: |
+          {
+            echo "## AL Runner Tests"
+            echo ""
+            jq -r '"**\(.passed)/\(.total) passed** · \(.failed) failed · \(.errors) errors"' al-results.json
+            echo ""
+            echo "| Status | Test | Duration |"
+            echo "|---|---|---|"
+            jq -r '.tests[] | "| \(if .status == "pass" then "✅" elif .status == "fail" then "❌" else "⚠️" end) | `\(.name)` | \(.durationMs) ms |"' al-results.json
+            echo ""
+            # Failed tests: expanded section with message + stack trace
+            if jq -e '[.tests[] | select(.status != "pass")] | length > 0' al-results.json > /dev/null; then
+              echo "### Failures"
+              echo ""
+              jq -r '
+                .tests[]
+                | select(.status != "pass")
+                | "<details><summary><code>\(.name)</code> — \(.status)</summary>\n\n```\n\(.message // "(no message)")\n\(.stackTrace // "")\n```\n</details>\n"
+              ' al-results.json
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Emit GitHub Actions annotations for failures
+        if: always() && hashFiles('al-results.json') != ''
+        run: |
+          jq -r '
+            .tests[]
+            | select(.status != "pass")
+            | "::error line=\(.alSourceLine // 0),col=\(.alSourceColumn // 0)::\(.name): \(.message // "test failed")"
+          ' al-results.json
+
+      - name: Upload JSON results
+        if: always() && hashFiles('al-results.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: al-runner-results
+          path: al-results.json
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: cobertura.xml
+          if-no-files-found: ignore
+
+      - name: Fail if any test failed
+        if: always()
+        run: |
+          if [ ! -f al-results.json ]; then
+            echo "al-results.json is missing — al-runner likely failed to compile or crashed before producing JSON output."
+            exit 1
+          fi
+          exit_code=$(jq -r '.exitCode' al-results.json)
+          if [ "$exit_code" != "0" ]; then
+            echo "al-runner reported exit code $exit_code"
+            exit "$exit_code"
+          fi

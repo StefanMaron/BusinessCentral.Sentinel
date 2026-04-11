@@ -14,8 +14,8 @@ codeunit 71180286 ReRunAllAlerts
 
     trigger OnRun()
     var
-        Alert: Record AlertSESTM;
+        AlertDispatcher: Codeunit AlertDispatcherSESTM;
     begin
-        Alert.FullRerun();
+        AlertDispatcher.FullRerun();
     end;
 }

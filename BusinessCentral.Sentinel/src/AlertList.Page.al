@@ -70,8 +70,10 @@ page 71180275 AlertListSESTM
                 ToolTip = 'Run the analysis of the current environment, and check for new alerts.';
 
                 trigger OnAction()
+                var
+                    AlertDispatcher: Codeunit AlertDispatcherSESTM;
                 begin
-                    Rec.FindNewAlerts();
+                    AlertDispatcher.FindNewAlerts();
                 end;
             }
             action(SetToIgnore)
@@ -120,8 +122,10 @@ page 71180275 AlertListSESTM
                 ToolTip = 'Run the analysis of the current environment, and check for new alerts.';
 
                 trigger OnAction()
+                var
+                    AlertDispatcher: Codeunit AlertDispatcherSESTM;
                 begin
-                    Rec.FullRerun();
+                    AlertDispatcher.FullRerun();
                 end;
             }
             action(MoreDetails)

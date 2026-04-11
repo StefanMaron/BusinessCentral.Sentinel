@@ -109,29 +109,10 @@ table 71180275 AlertSESTM
             this.LogUsage();
     end;
 
-    procedure FindNewAlerts()
-    var
-        currOrdinal: Integer;
-        Alert: Interface IAuditAlertSESTM;
-        AlertsToRun: List of [Interface IAuditAlertSESTM];
-    begin
-        foreach currOrdinal in Enum::AlertCodeSESTM.Ordinals() do
-            AlertsToRun.Add(Enum::AlertCodeSESTM.FromInteger(currOrdinal));
-
-        foreach Alert in AlertsToRun do
-            Alert.CreateAlerts();
-
-        if not Rec.FindFirst() then
-        ; // Move to the first record, after Alert creation. If no alerts where created, do nothing
-    end;
-
     procedure SetToIgnore()
     var
         IgnoredAlerts: Record IgnoredAlertsSESTM;
     begin
-        if Rec.Ignore then
-            exit;
-
         IgnoredAlerts.Validate(AlertCode, Rec.AlertCode);
         IgnoredAlerts.Validate(UniqueIdentifier, Rec.UniqueIdentifier);
         if not IgnoredAlerts.Insert(true) then
@@ -142,22 +123,10 @@ table 71180275 AlertSESTM
     var
         IgnoredAlerts: Record IgnoredAlertsSESTM;
     begin
-        if not Rec.Ignore then
-            exit;
-
         IgnoredAlerts.SetRange(AlertCode, Rec.AlertCode);
         IgnoredAlerts.SetRange(UniqueIdentifier, Rec.UniqueIdentifier);
         if not IgnoredAlerts.IsEmpty() then
             IgnoredAlerts.DeleteAll(true);
-    end;
-
-    procedure FullRerun()
-    var
-        Alert: Record AlertSESTM;
-    begin
-        Alert.ClearAllAlerts();
-        Commit(); // Commit the transaction to ensure that the alerts are deleted before they are recreated
-        Alert.FindNewAlerts();
     end;
 
     procedure ClearAllAlerts()

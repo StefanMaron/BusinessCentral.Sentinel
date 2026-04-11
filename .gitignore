@@ -19,3 +19,5 @@ rad.json
 .snapshots/
 cache_*
 ~$*
+cobertura.xml
+al-results.json

@@ -1,0 +1,39 @@
+{
+  "id": "4a515fb1-b43a-4e84-93bb-f5557d60b265",
+  "name": "BusinessCentral.Sentinel.Test",
+  "publisher": "Stefan Maron Consulting",
+  "version": "1.9.0.0",
+  "brief": "Unit tests for BusinessCentral.Sentinel",
+  "description": "Unit tests for BusinessCentral.Sentinel, executed via al-runner (no BC container required).",
+  "privacyStatement": "https://stefanmaron.com/privacystatement/",
+  "EULA": "https://stefanmaron.com/eula/",
+  "url": "https://github.com/StefanMaron/BusinessCentral.Sentinel",
+  "dependencies": [
+    {
+      "id": "1aba0d21-e0f6-45c2-8d46-b7a4f155d66a",
+      "name": "BusinessCentral.Sentinel",
+      "publisher": "Stefan Maron Consulting",
+      "version": "1.9.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "25.0.0.0",
+  "idRanges": [
+    {
+      "from": 71180500,
+      "to": 71180574
+    }
+  ],
+  "target": "Internal",
+  "features": [
+    "NoImplicitWith",
+    "TranslationFile"
+  ],
+  "runtime": "14.0",
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  }
+}

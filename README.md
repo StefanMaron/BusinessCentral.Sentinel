@@ -1,5 +1,7 @@
 # BusinessCentral.Sentinel
 
+[![AL Runner Tests](https://github.com/StefanMaron/BusinessCentral.Sentinel/actions/workflows/AlRunnerTests.yaml/badge.svg?branch=main)](https://github.com/StefanMaron/BusinessCentral.Sentinel/actions/workflows/AlRunnerTests.yaml)
+
 BusinessCentral.Sentinel is an intelligent monitoring and advisory tool designed for Microsoft Dynamics 365 Business Central users. It focuses on the analysis of technical configuration and may include functional configuration in the future. This app provides real-time insights, proactive alerts, and actionable recommendations to enhance operational efficiency, reduce risks, and optimize decision-making. BusinessCentral.Sentinel acts as a vigilant 'sentinel' for your business, ensuring key processes run smoothly and critical issues are addressed promptly.
 
 Get it on AppSource:
