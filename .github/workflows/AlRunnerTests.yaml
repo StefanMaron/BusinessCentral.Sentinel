@@ -14,7 +14,7 @@ concurrency:
 env:
   # Pinned al-runner version. Bump explicitly after verifying each new release
   # against the Sentinel suite locally — see BusinessCentral.Sentinel.Test/.
-  AL_RUNNER_VERSION: '1.0.3'
+  AL_RUNNER_VERSION: '1.0.5'
 
 jobs:
   run-tests:

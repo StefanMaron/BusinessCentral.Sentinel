@@ -63,11 +63,31 @@ codeunit 71180505 UserWithSuperTestSESTM
         Assert.IsTrue(Alert.IsEmpty(), 'Users without SUPER should not trigger SE-000005');
     end;
 
-    // NOTE: "external users are excluded" (the rule's `SetFilter` with
-    // `<>External User&<>Application&<>AAD Group`) cannot be unit-tested under
-    // al-runner today — the runner's `SetFilter` supports OR (`|`) but not
-    // AND (`&`), so the filter short-circuits and the external user passes
-    // through. Tracked upstream; once AND filters work, add a test here.
+    [Test]
+    procedure ExternalUserWithSuperIsFilteredOut()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit UserWithSuperSESTM;
+        User: Record User;
+        AccessControl: Record "Access Control";
+    begin
+        // The rule filters out External User / Application / AAD Group license
+        // types, so an external user with SUPER should not alert.
+        User."User Security ID" := '00000000-0000-0000-0000-000000000001';
+        User."User Name" := 'EXT';
+        User."License Type" := User."License Type"::"External User";
+        User.Insert();
+
+        AccessControl."User Security ID" := User."User Security ID";
+        AccessControl."Role ID" := 'SUPER';
+        AccessControl."Company Name" := 'CRONUS';
+        AccessControl.Insert();
+
+        Rule.CreateAlerts();
+
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000005");
+        Assert.IsTrue(Alert.IsEmpty(), 'External users are excluded from SUPER check');
+    end;
 
     [Test]
     procedure SuperInAllCompaniesIsTaggedAsAllInShortDescription()

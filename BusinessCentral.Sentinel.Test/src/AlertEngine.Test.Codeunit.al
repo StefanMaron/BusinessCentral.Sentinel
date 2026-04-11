@@ -166,16 +166,10 @@ codeunit 71180500 AlertEngineTestSESTM
         Assert.AreEqual(2, Alert.Count(), 'distinct UniqueIdentifiers produce distinct alerts');
     end;
 
-    // NOTE: we assert against the underlying IgnoredAlertsSESTM table instead
-    // of `Alert.CalcFields(Ignore)`. al-runner 1.0.3 still does not recompute
-    // multi-field `exist(...)` FlowFields (the `Ignore` field's `CalcFormula`
-    // filters on both AlertCode and UniqueIdentifier). Single-field `exist`
-    // was fixed in 1.0.3; tracked upstream as a follow-up on the same issue.
     [Test]
-    procedure SetToIgnoreInsertsIgnoredAlertRow()
+    procedure SetToIgnoreMarksAlertIgnoredAndClearIgnoreReverts()
     var
         Alert: Record AlertSESTM;
-        IgnoredAlert: Record IgnoredAlertsSESTM;
     begin
         Alert.New(
             "AlertCodeSESTM"::"SE-000007",
@@ -189,42 +183,16 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000007");
         Alert.SetRange(UniqueIdentifier, 'UID-7');
         Alert.FindFirst();
+        Alert.CalcFields(Ignore);
+        Assert.IsFalse(Alert.Ignore, 'Fresh alert should not be ignored');
 
         Alert.SetToIgnore();
-
-        IgnoredAlert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000007");
-        IgnoredAlert.SetRange(UniqueIdentifier, 'UID-7');
-        Assert.IsFalse(IgnoredAlert.IsEmpty(), 'SetToIgnore should insert an IgnoredAlertsSESTM row');
-    end;
-
-    [Test]
-    procedure ClearIgnoreRemovesMatchingIgnoredAlertRow()
-    var
-        Alert: Record AlertSESTM;
-        IgnoredAlert: Record IgnoredAlertsSESTM;
-    begin
-        Alert.New(
-            "AlertCodeSESTM"::"SE-000008",
-            'short',
-            SeveritySESTM::Warning,
-            AreaSESTM::Performance,
-            'long',
-            'action',
-            'UID-8');
-
-        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
-        Alert.SetRange(UniqueIdentifier, 'UID-8');
-        Alert.FindFirst();
-
-        IgnoredAlert.Validate(AlertCode, "AlertCodeSESTM"::"SE-000008");
-        IgnoredAlert.Validate(UniqueIdentifier, 'UID-8');
-        IgnoredAlert.Insert();
+        Alert.CalcFields(Ignore);
+        Assert.IsTrue(Alert.Ignore, 'SetToIgnore should flip the FlowField');
 
         Alert.ClearIgnore();
-
-        IgnoredAlert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
-        IgnoredAlert.SetRange(UniqueIdentifier, 'UID-8');
-        Assert.IsTrue(IgnoredAlert.IsEmpty(), 'ClearIgnore should delete the matching IgnoredAlertsSESTM row');
+        Alert.CalcFields(Ignore);
+        Assert.IsFalse(Alert.Ignore, 'ClearIgnore should flip it back');
     end;
 
     [Test]

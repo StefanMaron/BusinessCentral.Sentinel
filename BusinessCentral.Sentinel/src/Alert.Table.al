@@ -113,6 +113,9 @@ table 71180275 AlertSESTM
     var
         IgnoredAlerts: Record IgnoredAlertsSESTM;
     begin
+        if Rec.Ignore then
+            exit;
+
         IgnoredAlerts.Validate(AlertCode, Rec.AlertCode);
         IgnoredAlerts.Validate(UniqueIdentifier, Rec.UniqueIdentifier);
         if not IgnoredAlerts.Insert(true) then
@@ -123,6 +126,9 @@ table 71180275 AlertSESTM
     var
         IgnoredAlerts: Record IgnoredAlertsSESTM;
     begin
+        if not Rec.Ignore then
+            exit;
+
         IgnoredAlerts.SetRange(AlertCode, Rec.AlertCode);
         IgnoredAlerts.SetRange(UniqueIdentifier, Rec.UniqueIdentifier);
         if not IgnoredAlerts.IsEmpty() then
