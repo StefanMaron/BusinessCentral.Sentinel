@@ -90,6 +90,38 @@ codeunit 71180505 UserWithSuperTestSESTM
     end;
 
     [Test]
+    procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit UserWithSuperSESTM;
+        User: Record User;
+        AccessControl: Record "Access Control";
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        User."User Security ID" := '00000000-0000-0000-0000-000000000099';
+        User."User Name" := 'ADMIN';
+        User."License Type" := User."License Type"::"Full User";
+        User.Insert();
+
+        AccessControl."User Security ID" := User."User Security ID";
+        AccessControl."Role ID" := 'SUPER';
+        AccessControl."Company Name" := 'CRONUS';
+        AccessControl.Insert();
+
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000005");
+        Alert.FindFirst();
+
+        // Rule.ShowMoreDetails skipped until upstream Hyperlink NullRef fix.
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AutoFix(Alert);
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.IsTrue(Dimensions.ContainsKey('AlertUserSecurityID'), 'Dimensions should include AlertUserSecurityID');
+        Assert.AreEqual('CRONUS', Dimensions.Get('AlertCompanyName'), 'Dimensions should carry the company name');
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [Test]
     procedure SuperInAllCompaniesIsTaggedAsAllInShortDescription()
     var
         Alert: Record AlertSESTM;

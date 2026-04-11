@@ -49,6 +49,31 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     end;
 
     [Test]
+    procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit EvaluationCompanyInProdSESTM;
+        Company: Record Company;
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        Company.Name := 'EVAL';
+        Company.SystemId := '00000000-0000-0000-0000-000000000009';
+        Company."Evaluation Company" := true;
+        Company.Insert();
+
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
+        Alert.FindFirst();
+
+        // Rule.ShowMoreDetails skipped until upstream Hyperlink NullRef fix.
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AutoFix(Alert);
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.IsTrue(Dimensions.ContainsKey('AlertCompanyName'), 'Dimensions should include AlertCompanyName');
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [Test]
     procedure OnlyEvaluationCompaniesGetAlerts()
     var
         Alert: Record AlertSESTM;

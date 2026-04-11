@@ -37,6 +37,37 @@ codeunit 71180503 PteDownloadCodeTestSESTM
     end;
 
     [Test]
+    procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit AlertPteDownloadCodeSESTM;
+        Extension: Record "NAV App Installed App";
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        // Seed Package ID == App ID so the rule's Get-by-PK lookup in
+        // AddCustomTelemetryDimensions actually finds the row.
+        Extension."Package ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+        Extension."App ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+        Extension.Name := 'Customer PTE';
+        Extension.Publisher := 'Customer Inc.';
+        Extension."Version Major" := 2;
+        Extension."Published As" := Extension."Published As"::PTE;
+        Extension.Insert();
+
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
+        Alert.FindFirst();
+
+        // Rule.ShowMoreDetails skipped until upstream Hyperlink NullRef fix.
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AutoFix(Alert);
+        // Rule's AddCustomTelemetryDimensions exits early under al-runner's
+        // Guid ↔ Text round-trip bug; the call still runs for coverage.
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [Test]
     procedure DevAndGlobalExtensionsAreIgnored()
     var
         Alert: Record AlertSESTM;

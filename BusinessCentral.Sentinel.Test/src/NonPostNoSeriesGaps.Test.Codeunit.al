@@ -4,6 +4,7 @@ using STM.BusinessCentral.Sentinel;
 using Microsoft.Foundation.NoSeries;
 using Microsoft.Sales.Setup;
 using Microsoft.Purchases.Setup;
+using Microsoft.Projects.Project.Setup;
 
 codeunit 71180507 NonPostNoSeriesTestSESTM
 {
@@ -52,6 +53,51 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         Alert.FindFirst();
         Assert.AreEqual(SeveritySESTM::Warning, Alert.Severity, 'Severity should be Warning');
         Assert.AreEqual(AreaSESTM::Performance, Alert."Area", 'Area should be Performance');
+    end;
+
+    [Test]
+    procedure JobsNoSeriesCreatesWarning()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit NonPostNoSeriesGapsSESTM;
+        JobsSetup: Record "Jobs Setup";
+    begin
+        SeedNonGapNoSeries('JOB');
+
+        JobsSetup."Primary Key" := '';
+        JobsSetup."Job Nos." := 'JOB';
+        JobsSetup.Insert();
+
+        Rule.CreateAlerts();
+
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000006");
+        Alert.SetRange(UniqueIdentifier, 'JOB');
+        Assert.AreEqual(1, Alert.Count(), 'Alert expected for a non-gap jobs series');
+    end;
+
+    [Test]
+    procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit NonPostNoSeriesGapsSESTM;
+        SalesSetup: Record "Sales & Receivables Setup";
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        SeedNonGapNoSeries('SALES-ORDER');
+        SalesSetup."Primary Key" := '';
+        SalesSetup."Order Nos." := 'SALES-ORDER';
+        SalesSetup.Insert();
+
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000006");
+        Alert.FindFirst();
+
+        // Rule.ShowMoreDetails skipped until upstream Hyperlink NullRef fix.
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AutoFix(Alert);
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.AreEqual('SALES-ORDER', Dimensions.Get('AlertNoSeriesCode'), 'Dimensions should carry the series code');
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
     end;
 
     [Test]

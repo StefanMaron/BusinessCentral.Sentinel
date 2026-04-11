@@ -3,6 +3,10 @@ namespace STM.BusinessCentral.Sentinel.Test;
 using STM.BusinessCentral.Sentinel;
 using System.Apps;
 using Microsoft.Foundation.Company;
+// Direct stub-table reference — `table 30102 "Shpfy Shop"` lives in the
+// stubs folder so tests can seed probed rows for the RecRef data path.
+using System.Apps;
+using Microsoft.Foundation.Company;
 
 codeunit 71180508 UnusedExtInstalledTestSESTM
 {
@@ -61,6 +65,46 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Assert.AreEqual(SeveritySESTM::Warning, Alert.Severity, 'Severity should be Warning');
         Assert.AreEqual(AreaSESTM::Performance, Alert."Area", 'Area should be Performance');
     end;
+
+    local procedure ShopifyAppId(): Text
+    begin
+        exit('ec255f57-31d0-4ca2-b751-f2fa7c745abb');
+    end;
+
+    [Test]
+    procedure ShopifyInstalledButNoShopsRaisesAlert()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit UnusedExtensionInstalledSESTM;
+        Extension: Record "NAV App Installed App";
+        Company: Record Company;
+    begin
+        // Exercises the RecRef-based data probe path: an installed watched
+        // extension + a non-evaluation company + an empty probed table
+        // (Shpfy Shop, 30102) should raise SE-000007.
+        Extension."Package ID" := ShopifyAppId();
+        Extension."App ID" := ShopifyAppId();
+        Extension.Name := 'Shopify Connector';
+        Extension."Published As" := Extension."Published As"::Global;
+        Extension.Insert();
+
+        Company.Name := 'CRONUS';
+        Company."Evaluation Company" := false;
+        Company.Insert();
+
+        Rule.CreateAlerts();
+
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000007");
+        Alert.SetRange(UniqueIdentifier, ShopifyAppId());
+        Assert.AreEqual(1, Alert.Count(), 'Alert expected when Shopify is installed but Shpfy Shop is empty');
+    end;
+
+    // NOTE: the "probed table has data → no alert" branch cannot be
+    // exercised under al-runner — the `--guide` documents that
+    // `RecordRef` stubs compile but do not function, so
+    // `RecRef.Open(...).IsEmpty` always evaluates the same regardless of
+    // what we seed. Once the runner wires up RecRef to the in-memory store
+    // we can add a "seed Shpfy Shop row → no SE-000007" test here.
 
     [Test]
     procedure MultipleWatchedExtensionsEachCreateTheirOwnAlert()

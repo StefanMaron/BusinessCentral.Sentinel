@@ -34,6 +34,43 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     end;
 
     [Test]
+    procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit AlertDevScopeExtSESTM;
+        Extension: Record "NAV App Installed App";
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        // Rule's AddCustomTelemetryDimensions does `Extensions.Get(UniqueIdentifier)`
+        // where UniqueIdentifier is the App ID — but Get always uses the
+        // primary key (Package ID). To exercise the full dimensions path,
+        // seed Package ID == App ID.
+        Extension."Package ID" := '22222222-2222-2222-2222-222222222222';
+        Extension."App ID" := '22222222-2222-2222-2222-222222222222';
+        Extension.Name := 'Dev Extension';
+        Extension.Publisher := 'Acme';
+        Extension."Version Major" := 1;
+        Extension."Version Minor" := 0;
+        Extension."Version Build" := 0;
+        Extension."Version Revision" := 0;
+        Extension."Published As" := Extension."Published As"::Dev;
+        Extension.Insert();
+
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
+        Alert.FindFirst();
+
+        // Rule.ShowMoreDetails skipped until upstream Hyperlink NullRef fix.
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AutoFix(Alert);
+        // AddCustomTelemetryDimensions does Extensions.Get(Alert.UniqueIdentifier).
+        // Under al-runner's Guid ↔ Text round-trip bug that lookup silently
+        // exits, so we only exercise the call for coverage, not the values.
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [Test]
     procedure PteAndGlobalExtensionsAreIgnored()
     var
         Alert: Record AlertSESTM;

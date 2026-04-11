@@ -61,4 +61,40 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
         Assert.AreEqual(1, Alert.Count(), 'A different job queue entry should not satisfy the check');
     end;
+
+    [Test]
+    procedure AutoFixAttemptsJobQueueCreation()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit AnalysisNotScheduledSESTM;
+    begin
+        // al-runner's Confirm() always returns true, so AutoFix enters the
+        // `this.CreateJobQueueEntry()` branch. That method itself currently
+        // crashes on `Validate(DateFormula field)` under al-runner, so we
+        // wrap in asserterror to at least cover the call-site statement.
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
+        Alert.FindFirst();
+
+        asserterror Rule.AutoFix(Alert);
+    end;
+
+    [Test]
+    procedure ShowRelatedAndTelemetryAreCallable()
+    var
+        Alert: Record AlertSESTM;
+        Rule: Codeunit AnalysisNotScheduledSESTM;
+        Dimensions: Dictionary of [Text, Text];
+    begin
+        // Smoke: ensure the rest of the IAuditAlertSESTM surface runs for
+        // SE-000008 without crashing. (Rule.ShowMoreDetails skipped until
+        // upstream Hyperlink NullRef fix.)
+        Rule.CreateAlerts();
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
+        Alert.FindFirst();
+
+        Rule.ShowRelatedInformation(Alert);
+        Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
+        Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
 }

@@ -196,6 +196,21 @@ codeunit 71180500 AlertEngineTestSESTM
     end;
 
     [Test]
+    procedure ClearAllAlertsRestartsExistingNumberSequence()
+    var
+        Alert: Record AlertSESTM;
+    begin
+        // Covers the `if NumberSequence.Exists(...) then Restart(...)` arm in
+        // ClearAllAlerts. We create the sequence manually because the real
+        // creation site (Alert.OnInsert) does not fire under al-runner (#27).
+        if not NumberSequence.Exists('BCSentinelSESTMAlertId') then
+            NumberSequence.Insert('BCSentinelSESTMAlertId');
+
+        Alert.ClearAllAlerts();
+        Assert.IsTrue(Alert.IsEmpty(), 'ClearAllAlerts should leave the table empty');
+    end;
+
+    [Test]
     procedure ClearAllAlertsEmptiesTheTable()
     var
         Alert: Record AlertSESTM;
@@ -206,5 +221,71 @@ codeunit 71180500 AlertEngineTestSESTM
 
         Alert.ClearAllAlerts();
         Assert.IsTrue(Alert.IsEmpty(), 'ClearAllAlerts should empty the alert table');
+    end;
+
+    // NOTE: the `if not IgnoredAlerts.Insert(true) then exit;` branch in
+    // Alert.SetToIgnore cannot be covered — al-runner's in-memory store
+    // does not enforce primary-key uniqueness on Insert, so the duplicate
+    // Insert returns true instead of false and the exit arm is never taken.
+    [Test]
+    procedure SetToIgnoreIsNoopWhenAlreadyIgnored()
+    var
+        Alert: Record AlertSESTM;
+        IgnoredAlert: Record IgnoredAlertsSESTM;
+    begin
+        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'GUARD-1');
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
+        Alert.SetRange(UniqueIdentifier, 'GUARD-1');
+        Alert.FindFirst();
+
+        Alert.SetToIgnore();
+        Alert.CalcFields(Ignore);
+        Alert.SetToIgnore(); // second call: FlowField guard should early-exit
+
+        IgnoredAlert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
+        IgnoredAlert.SetRange(UniqueIdentifier, 'GUARD-1');
+        Assert.AreEqual(1, IgnoredAlert.Count(), 'SetToIgnore on an already-ignored alert must not double-insert');
+    end;
+
+    [Test]
+    procedure ClearIgnoreIsNoopWhenNotIgnored()
+    var
+        Alert: Record AlertSESTM;
+        IgnoredAlert: Record IgnoredAlertsSESTM;
+    begin
+        Alert.New("AlertCodeSESTM"::"SE-000002", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'GUARD-2');
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
+        Alert.SetRange(UniqueIdentifier, 'GUARD-2');
+        Alert.FindFirst();
+        Alert.CalcFields(Ignore);
+
+        Alert.ClearIgnore(); // FlowField says not-ignored, early-exit branch
+
+        IgnoredAlert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
+        IgnoredAlert.SetRange(UniqueIdentifier, 'GUARD-2');
+        Assert.IsTrue(IgnoredAlert.IsEmpty(), 'ClearIgnore on a non-ignored alert should be a no-op');
+    end;
+
+    // NOTE: we invoke `Alert.LogUsage()` directly rather than triggering it
+    // via `Alert.OnInsert` + `OnRuleLogging` telemetry. al-runner currently
+    // does not execute table `trigger OnInsert()` bodies at all — tracked
+    // upstream — so the "OnInsert → LogUsage" path isn't exercisable via the
+    // production call site.
+    [Test]
+    procedure LogUsageBuildsTelemetryDimensionsWithoutCrashing()
+    var
+        Alert: Record AlertSESTM;
+    begin
+        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'TELEM-1');
+        Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
+        Alert.SetRange(UniqueIdentifier, 'TELEM-1');
+        Alert.FindFirst();
+
+        // Covers Alert.Table.LogUsage (populates Severity/Area/Ignore
+        // dimensions, resolves the interface, calls TelemetryHelper.LogUsage)
+        // plus TelemetryHelperSESTM.LogUsage's IsSaaS short-circuit.
+        Alert.LogUsage();
+
+        Assert.AreEqual(1, Alert.Count(), 'LogUsage must not alter the alert table');
     end;
 }
