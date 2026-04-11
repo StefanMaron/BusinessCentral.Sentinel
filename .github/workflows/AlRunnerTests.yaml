@@ -36,11 +36,14 @@ jobs:
           dotnet tool install --global msdyn365bc.al.runner --version "$AL_RUNNER_VERSION"
           al-runner --help | head -1
 
-      - name: Cache al-runner BC service tier DLLs
+      - name: Cache al-runner BC artifacts
         uses: actions/cache@v5
         with:
-          path: ~/.msdyn365bc.al.runner
-          key: al-runner-bc-dlls-${{ env.AL_RUNNER_VERSION }}-v1
+          # al-runner downloads BC service-tier DLLs into the XDG data dir
+          # under ~/.local/share/al-runner/artifacts/<bc-version>/ on first
+          # run (~75 MB). Caching this keeps every run from re-downloading.
+          path: ~/.local/share/al-runner
+          key: al-runner-bc-artifacts-${{ env.AL_RUNNER_VERSION }}-v1
 
       - name: Run unit tests
         id: tests
