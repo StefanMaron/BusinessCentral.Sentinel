@@ -4,6 +4,7 @@ enum 71180279 TelemetryLogging
 {
     Access = Internal;
     Extensible = true;
+    // Controls how often Sentinel emits telemetry events.
 
     value(0; " ")
     {
