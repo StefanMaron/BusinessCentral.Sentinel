@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v9.0/.Modules/settings.schema.json",
   "type": "AppSource App",
   "templateUrl": "https://github.com/microsoft/AL-Go-AppSource@main",
   "templateSha": "04f60f74bafd03df919955477c3dd27964fec65c"
