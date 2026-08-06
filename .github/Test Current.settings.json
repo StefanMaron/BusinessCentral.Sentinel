@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/StefanMaron/AL-Go/feat/linux-fast-lane/Actions/.Modules/settings.schema.json",
   "artifact": "////latest",
   "cacheImageName": "",
   "versioningStrategy": 15
