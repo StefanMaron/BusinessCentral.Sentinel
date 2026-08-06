@@ -12,6 +12,13 @@
   "url": "https://github.com/StefanMaron/BusinessCentral.Sentinel",
   "logo": "logo.png",
   "dependencies": [],
+  "internalsVisibleTo": [
+    {
+      "id": "4a515fb1-b43a-4e84-93bb-f5557d60b265",
+      "name": "BusinessCentral.Sentinel.Test",
+      "publisher": "Stefan Maron Consulting"
+    }
+  ],
   "screenshots": [],
   "platform": "1.0.0.0",
   "application": "25.0.0.0",

@@ -2,19 +2,17 @@ namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
 using System.Apps;
-using Microsoft.Foundation.Company;
-// Direct stub-table reference — `table 30102 "Shpfy Shop"` lives in the
-// stubs folder so tests can seed probed rows for the RecRef data path.
-using System.Apps;
-using Microsoft.Foundation.Company;
+using System.Environment;
+using System.TestLibraries.Utilities;
 
 codeunit 71180508 UnusedExtInstalledTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     // The rule checks for these App IDs. The "no-table-list" variants skip the
     // RecRef-based data probe entirely — they just alert if the extension is
@@ -29,12 +27,39 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         exit('334ef79e-547e-4631-8ba1-7a7f18e14de6');
     end;
 
+    local procedure ShopifyAppId(): Text
+    begin
+        exit('ec255f57-31d0-4ca2-b751-f2fa7c745abb');
+    end;
+
+    // "NAV App Installed App"'s real primary key is App ID (not Package ID,
+    // despite the field order) and the table is DataPerCompany = false, so
+    // rows persist across every test in this codeunit (BC's test runner only
+    // rolls back once per codeunit, not per test). Wipe every App ID this
+    // codeunit ever seeds before each test so tests don't see each other's
+    // leftover extensions.
+    local procedure ResetSeededExtensions()
+    var
+        Extension: Record "NAV App Installed App";
+        AppId: Text;
+        Ids: List of [Text];
+    begin
+        Ids.Add(CloudMigrationAppId());
+        Ids.Add(IntelligentCloudAppId());
+        Ids.Add(ShopifyAppId());
+        foreach AppId in Ids do
+            if Extension.Get(AppId) then
+                Extension.Delete();
+    end;
+
     [Test]
     procedure NoWatchedExtensionsInstalledCreatesNoAlerts()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit UnusedExtensionInstalledSESTM;
     begin
+        Alert.ClearAllAlerts();
+        ResetSeededExtensions();
         // Nothing seeded — every RaiseAlertIfExtensionIsUnused call should
         // early-exit on `Extensions.IsEmpty()`.
         Rule.CreateAlerts();
@@ -50,6 +75,8 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Alert.ClearAllAlerts();
+        ResetSeededExtensions();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := CloudMigrationAppId();
         Extension.Name := 'Cloud Migration';
@@ -66,11 +93,13 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Assert.AreEqual(AreaSESTM::Performance, Alert."Area", 'Area should be Performance');
     end;
 
-    local procedure ShopifyAppId(): Text
-    begin
-        exit('ec255f57-31d0-4ca2-b751-f2fa7c745abb');
-    end;
-
+    // NOTE: blocked in this local bc-linux environment — Company.Insert()
+    // for a genuinely new company ('CRONUS' here, distinct from the real
+    // 'CRONUS International Ltd.') throws
+    // "System.InvalidOperationException: Tenant numeric id must be set" from
+    // the platform's native company-provisioning code, independent of any
+    // AL trigger. That's a bc-linux/company-creation limitation, not
+    // something fixable from this app's AL code — see task report.
     [Test]
     procedure ShopifyInstalledButNoShopsRaisesAlert()
     var
@@ -79,6 +108,8 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Extension: Record "NAV App Installed App";
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
+        ResetSeededExtensions();
         // Exercises the RecRef-based data probe path: an installed watched
         // extension + a non-evaluation company + an empty probed table
         // (Shpfy Shop, 30102) should raise SE-000007.
@@ -113,6 +144,8 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Alert.ClearAllAlerts();
+        ResetSeededExtensions();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := CloudMigrationAppId();
         Extension.Name := 'Cloud Migration';
@@ -129,6 +162,7 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Rule.CreateAlerts();
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000007");
+        Alert.SetFilter(UniqueIdentifier, '%1|%2', CloudMigrationAppId(), IntelligentCloudAppId());
         Assert.AreEqual(2, Alert.Count(), 'One alert per installed watched extension');
     end;
 }

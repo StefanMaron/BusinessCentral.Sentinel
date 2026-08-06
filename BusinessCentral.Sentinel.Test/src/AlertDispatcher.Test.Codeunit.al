@@ -1,7 +1,8 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
-using Microsoft.Foundation.Company;
+using System.TestLibraries.Utilities;
+using System.Environment;
 using System.Apps;
 
 // End-to-end test for AlertDispatcher — confirms that the enum-driven fan-out
@@ -10,10 +11,11 @@ using System.Apps;
 codeunit 71180509 AlertDispatcherTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure FindNewAlertsFiresAnalysisNotScheduledOnEmptyEnv()
@@ -21,6 +23,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
     begin
+        Alert.ClearAllAlerts();
         // With nothing seeded, the "analysis not scheduled" rule has a trigger
         // (no Job Queue Entry matching the rerun codeunit) — all the other
         // rules early-exit.
@@ -38,6 +41,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Company: Record Company;
         Extension: Record "NAV App Installed App";
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -67,6 +71,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Dispatcher: Codeunit AlertDispatcherSESTM;
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -85,6 +90,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Dispatcher: Codeunit AlertDispatcherSESTM;
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();

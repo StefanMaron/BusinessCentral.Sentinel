@@ -1,16 +1,18 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 using System.Security.AccessControl;
 using System.Security.User;
 
 codeunit 71180505 UserWithSuperTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure UserWithSuperRoleCreatesInfoAlert()
@@ -20,6 +22,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Alert.ClearAllAlerts();
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
         User."User Name" := 'ALICE';
         User."License Type" := User."License Type"::"Full User";
@@ -47,6 +50,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Alert.ClearAllAlerts();
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
         User."User Name" := 'BOB';
         User."License Type" := User."License Type"::"Full User";
@@ -71,6 +75,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Alert.ClearAllAlerts();
         // The rule filters out External User / Application / AAD Group license
         // types, so an external user with SUPER should not alert.
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
@@ -90,6 +95,7 @@ codeunit 71180505 UserWithSuperTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmYesHandler,UserCardPageHandler,NoAutofixMessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -98,6 +104,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         AccessControl: Record "Access Control";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Alert.ClearAllAlerts();
         User."User Security ID" := '00000000-0000-0000-0000-000000000099';
         User."User Name" := 'ADMIN';
         User."License Type" := User."License Type"::"Full User";
@@ -129,6 +136,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Alert.ClearAllAlerts();
         // The rule replaces an empty Company Name with '<all>' before composing
         // the short description.
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
@@ -146,5 +154,21 @@ codeunit 71180505 UserWithSuperTestSESTM
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000005");
         Alert.FindFirst();
         Assert.IsTrue(StrPos(Alert.ShortDescription, '<all>') > 0, 'Empty company should be rendered as <all>');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmYesHandler(Question: Text; var Reply: Boolean)
+    begin
+        Reply := true;
+    end;
+
+    [PageHandler]
+    procedure UserCardPageHandler(var UserCard: TestPage "User Card")
+    begin
+    end;
+
+    [MessageHandler]
+    procedure NoAutofixMessageHandler(Msg: Text)
+    begin
     end;
 }

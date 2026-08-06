@@ -1,6 +1,7 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 
 /// <summary>
 /// Exercises the core Alert engine (Alert.Table.al) in isolation:
@@ -14,10 +15,11 @@ using STM.BusinessCentral.Sentinel;
 codeunit 71180500 AlertEngineTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure NewInsertsAlertWithDefaultSeverity()
@@ -276,9 +278,18 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
-        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'TELEM-1');
+        // SE-000001's rule (AlertPteDownloadCodeSESTM) does
+        // `Extensions.Get(Alert.UniqueIdentifier)` in AddCustomTelemetryDimensions,
+        // and "NAV App Installed App" keys on a Guid field — a non-GUID
+        // UniqueIdentifier now throws "Invalid format of GUID string" against
+        // real BC (al-runner's Guid<->Text handling silently no-op'd instead,
+        // which is what let 'TELEM-1' pass before). Use a well-formed GUID so
+        // we still exercise LogUsage's plumbing without hitting that unrelated
+        // format error; the extension record is deliberately not seeded, so
+        // Get() legitimately returns false either way.
+        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', '99999999-9999-9999-9999-999999999999');
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
-        Alert.SetRange(UniqueIdentifier, 'TELEM-1');
+        Alert.SetRange(UniqueIdentifier, '99999999-9999-9999-9999-999999999999');
         Alert.FindFirst();
 
         // Covers Alert.Table.LogUsage (populates Severity/Area/Ignore

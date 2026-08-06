@@ -4,7 +4,7 @@
   "publisher": "Stefan Maron Consulting",
   "version": "1.9.0.0",
   "brief": "Unit tests for BusinessCentral.Sentinel",
-  "description": "Unit tests for BusinessCentral.Sentinel, executed via al-runner (no BC container required).",
+  "description": "Unit tests for BusinessCentral.Sentinel, compiled and run against real Business Central symbols.",
   "privacyStatement": "https://stefanmaron.com/privacystatement/",
   "EULA": "https://stefanmaron.com/eula/",
   "url": "https://github.com/StefanMaron/BusinessCentral.Sentinel",
@@ -14,6 +14,12 @@
       "name": "BusinessCentral.Sentinel",
       "publisher": "Stefan Maron Consulting",
       "version": "1.9.0.0"
+    },
+    {
+      "id": "dd0be2ea-f733-4d65-bb34-a28f4624fb14",
+      "name": "Library Assert",
+      "publisher": "Microsoft",
+      "version": "1.0.0.0"
     }
   ],
   "screenshots": [],

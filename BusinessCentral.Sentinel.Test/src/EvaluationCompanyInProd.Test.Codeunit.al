@@ -1,15 +1,18 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
+using System.Environment;
 using Microsoft.Foundation.Company;
 
 codeunit 71180501 EvalCompanyInProdTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure NoEvaluationCompaniesCreatesNoAlerts()
@@ -18,6 +21,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'PROD';
         Company."Evaluation Company" := false;
         Company.Insert();
@@ -35,6 +39,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -49,6 +54,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmYesHandler,CompaniesPageHandler,NoAutofixMessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -56,6 +62,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Company: Record Company;
         Dimensions: Dictionary of [Text, Text];
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'EVAL';
         Company.SystemId := '00000000-0000-0000-0000-000000000009';
         Company."Evaluation Company" := true;
@@ -80,6 +87,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Alert.ClearAllAlerts();
         Company.Name := 'PROD';
         Company.SystemId := '00000000-0000-0000-0000-000000000001';
         Company."Evaluation Company" := false;
@@ -101,5 +109,21 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
         Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmYesHandler(Question: Text; var Reply: Boolean)
+    begin
+        Reply := true;
+    end;
+
+    [PageHandler]
+    procedure CompaniesPageHandler(var Companies: TestPage Companies)
+    begin
+    end;
+
+    [MessageHandler]
+    procedure NoAutofixMessageHandler(Msg: Text)
+    begin
     end;
 }
