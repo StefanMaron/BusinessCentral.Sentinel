@@ -1,15 +1,30 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 using System.Apps;
 
 codeunit 71180502 AlertDevScopeExtTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
+
+    // "NAV App Installed App"'s real primary key is App ID (not Package ID,
+    // despite the field order) and the table is DataPerCompany = false, so
+    // rows persist across every test in this codeunit (BC's test runner only
+    // rolls back once per codeunit, not per test). Delete-if-exists before
+    // inserting so a reused App ID from an earlier test doesn't collide.
+    local procedure DeleteExtensionIfExists(AppId: Text)
+    var
+        Extension: Record "NAV App Installed App";
+    begin
+        if Extension.Get(AppId) then
+            Extension.Delete();
+    end;
 
     [Test]
     procedure DevScopeExtensionCreatesWarningAlert()
@@ -18,6 +33,8 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Alert.ClearAllAlerts();
+        DeleteExtensionIfExists('22222222-2222-2222-2222-222222222222');
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'Dev Extension';
@@ -26,7 +43,12 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
 
         Rule.CreateAlerts();
 
+        // A real BC environment (unlike al-runner) typically has other
+        // genuinely Dev-published extensions installed (e.g. this test app
+        // itself, published via the dev endpoint), so also filter by the
+        // extension we seeded rather than asserting a total universe count.
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
+        Alert.SetRange(UniqueIdentifier, '{22222222-2222-2222-2222-222222222222}');
         Assert.AreEqual(1, Alert.Count(), 'One alert expected per Dev-scope extension');
         Alert.FindFirst();
         Assert.AreEqual(SeveritySESTM::Warning, Alert.Severity, 'Severity should be Warning');
@@ -34,6 +56,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmYesHandler,ExtensionManagementPageHandler,NoAutofixMessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -41,10 +64,11 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Alert.ClearAllAlerts();
+        DeleteExtensionIfExists('22222222-2222-2222-2222-222222222222');
         // Rule's AddCustomTelemetryDimensions does `Extensions.Get(UniqueIdentifier)`
-        // where UniqueIdentifier is the App ID — but Get always uses the
-        // primary key (Package ID). To exercise the full dimensions path,
-        // seed Package ID == App ID.
+        // where UniqueIdentifier is the App ID, which is also the table's
+        // real primary key — Get() resolves it directly.
         Extension."Package ID" := '22222222-2222-2222-2222-222222222222';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'Dev Extension';
@@ -77,6 +101,9 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Alert.ClearAllAlerts();
+        DeleteExtensionIfExists('22222222-2222-2222-2222-222222222222');
+        DeleteExtensionIfExists('44444444-4444-4444-4444-444444444444');
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'PTE Extension';
@@ -92,7 +119,27 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
 
         Rule.CreateAlerts();
 
+        // Scope to the two extensions this test seeded — a real environment
+        // may have other genuinely Dev-published extensions (unlike
+        // al-runner's blank slate) producing unrelated SE-000002 alerts.
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
+        Alert.SetFilter(UniqueIdentifier, '%1|%2', '{22222222-2222-2222-2222-222222222222}', '{44444444-4444-4444-4444-444444444444}');
         Assert.IsTrue(Alert.IsEmpty(), 'No alert expected for PTE or Global extensions');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmYesHandler(Question: Text; var Reply: Boolean)
+    begin
+        Reply := true;
+    end;
+
+    [PageHandler]
+    procedure ExtensionManagementPageHandler(var ExtensionManagement: TestPage "Extension Management")
+    begin
+    end;
+
+    [MessageHandler]
+    procedure NoAutofixMessageHandler(Msg: Text)
+    begin
     end;
 }

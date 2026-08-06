@@ -1,14 +1,16 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 
 codeunit 71180510 SentinelSetupTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure GetTelemetryLoggingFallsBackToGlobalInitValueDefault()
