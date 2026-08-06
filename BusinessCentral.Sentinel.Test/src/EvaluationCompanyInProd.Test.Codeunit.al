@@ -14,17 +14,41 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    // Real BC does not support creating a company from AL — `POST
+    // /BC/ODataV4/Company` returns "Adding a company is not supported by
+    // Dynamics 365 Business Central OData web services", and there's no
+    // AL-reachable equivalent either; company creation is an admin-only
+    // operation (PowerShell / admin center) outside AL entirely, which is
+    // also why none of Microsoft's own Tests-TestLibraries /
+    // System Application Test Library codeunits have a "CreateCompany"
+    // helper. So instead of inserting fake companies, drive the Evaluation
+    // Company flag on whichever companies genuinely exist in this
+    // environment (a BC sandbox artifact always ships with at least one).
+    // Every test sets the exact state it needs up front rather than relying
+    // on a previous test's cleanup — TestIsolation only rolls back once,
+    // when the whole codeunit finishes.
+    local procedure SetAllCompaniesEvaluationFlag(Value: Boolean): Integer
+    var
+        Company: Record Company;
+        CompanyCount: Integer;
+    begin
+        if Company.FindSet(true) then
+            repeat
+                Company."Evaluation Company" := Value;
+                Company.Modify();
+                CompanyCount += 1;
+            until Company.Next() = 0;
+        exit(CompanyCount);
+    end;
+
     [Test]
     procedure NoEvaluationCompaniesCreatesNoAlerts()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
     begin
         Alert.ClearAllAlerts();
-        Company.Name := 'PROD';
-        Company."Evaluation Company" := false;
-        Company.Insert();
+        SetAllCompaniesEvaluationFlag(false);
 
         Rule.CreateAlerts();
 
@@ -40,9 +64,10 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Company: Record Company;
     begin
         Alert.ClearAllAlerts();
-        Company.Name := 'EVAL';
+        SetAllCompaniesEvaluationFlag(false);
+        Company.FindFirst();
         Company."Evaluation Company" := true;
-        Company.Insert();
+        Company.Modify();
 
         Rule.CreateAlerts();
 
@@ -63,10 +88,10 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Dimensions: Dictionary of [Text, Text];
     begin
         Alert.ClearAllAlerts();
-        Company.Name := 'EVAL';
-        Company.SystemId := '00000000-0000-0000-0000-000000000009';
+        SetAllCompaniesEvaluationFlag(false);
+        Company.FindFirst();
         Company."Evaluation Company" := true;
-        Company.Insert();
+        Company.Modify();
 
         Rule.CreateAlerts();
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
@@ -86,29 +111,23 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
+        TotalCompanies: Integer;
     begin
         Alert.ClearAllAlerts();
-        Company.Name := 'PROD';
-        Company.SystemId := '00000000-0000-0000-0000-000000000001';
+        // Mark every real company as an evaluation company, then flip
+        // exactly one back to non-evaluation ("PROD") — this environment
+        // has at least 2 real companies (BC sandbox artifacts always ship
+        // CRONUS plus at least one more), so the count-minus-one is always
+        // a meaningful, non-degenerate assertion.
+        TotalCompanies := SetAllCompaniesEvaluationFlag(true);
+        Company.FindFirst();
         Company."Evaluation Company" := false;
-        Company.Insert();
-
-        Company.Init();
-        Company.Name := 'EVAL1';
-        Company.SystemId := '00000000-0000-0000-0000-000000000002';
-        Company."Evaluation Company" := true;
-        Company.Insert();
-
-        Company.Init();
-        Company.Name := 'EVAL2';
-        Company.SystemId := '00000000-0000-0000-0000-000000000003';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Company.Modify();
 
         Rule.CreateAlerts();
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
-        Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+        Assert.AreEqual(TotalCompanies - 1, Alert.Count(), 'One alert per evaluation company, skipping production');
     end;
 
     [ConfirmHandler]

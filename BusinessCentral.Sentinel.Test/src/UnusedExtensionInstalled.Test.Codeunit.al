@@ -93,13 +93,6 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Assert.AreEqual(AreaSESTM::Performance, Alert."Area", 'Area should be Performance');
     end;
 
-    // NOTE: blocked in this local bc-linux environment — Company.Insert()
-    // for a genuinely new company ('CRONUS' here, distinct from the real
-    // 'CRONUS International Ltd.') throws
-    // "System.InvalidOperationException: Tenant numeric id must be set" from
-    // the platform's native company-provisioning code, independent of any
-    // AL trigger. That's a bc-linux/company-creation limitation, not
-    // something fixable from this app's AL code — see task report.
     [Test]
     procedure ShopifyInstalledButNoShopsRaisesAlert()
     var
@@ -119,9 +112,12 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Extension."Published As" := Extension."Published As"::Global;
         Extension.Insert();
 
-        Company.Name := 'CRONUS';
+        // Real BC does not support creating a company from AL (see
+        // EvaluationCompanyInProd.Test's comment) — use a company that
+        // genuinely exists instead of inserting one.
+        Company.FindFirst();
         Company."Evaluation Company" := false;
-        Company.Insert();
+        Company.Modify();
 
         Rule.CreateAlerts();
 
