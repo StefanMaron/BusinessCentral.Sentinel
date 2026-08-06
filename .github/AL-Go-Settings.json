@@ -2,5 +2,5 @@
   "$schema": "https://raw.githubusercontent.com/StefanMaron/AL-Go/feat/linux-fast-lane/Actions/.Modules/settings.schema.json",
   "type": "AppSource App",
   "templateUrl": "https://github.com/StefanMaron/AL-Go@feat/linux-fast-lane",
-  "templateSha": "22dbf315f5af3f1399f1a370905995d57f52797a"
+  "templateSha": "37176b9a26ef04244a677402515d118b4e9ff42b"
 }
