@@ -1,5 +1,5 @@
 {
   "type": "AppSource App",
-  "templateUrl": "https://github.com/microsoft/AL-Go-AppSource@main",
-  "templateSha": "04f60f74bafd03df919955477c3dd27964fec65c"
+  "templateUrl": "https://github.com/StefanMaron/AL-Go@feat/linux-fast-lane",
+  "templateSha": ""
 }
