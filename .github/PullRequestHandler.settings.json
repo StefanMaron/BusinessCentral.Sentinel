@@ -1,5 +1,6 @@
 {
   "useCompilerFolder": true,
   "doNotBuildTests": true,
-  "doNotPublishApps": true
+  "doNotPublishApps": true,
+  "linuxFastLane": true
 }
