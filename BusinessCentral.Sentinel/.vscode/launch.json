@@ -2,6 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "BC on Linux (Codespaces)",
+            "type": "al",
+            "request": "launch",
+            "server": "http://localhost",
+            "serverInstance": "BC",
+            "port": 7049,
+            "authentication": "UserPassword",
+            "breakOnError": "All",
+            "launchBrowser": false,
+            "schemaUpdateMode": "ForceSync"
+        },
+        {
             "name": "StMaDev",
             "type": "al",
             "request": "launch",
