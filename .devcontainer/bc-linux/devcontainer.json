@@ -2,7 +2,8 @@
     "name": "BC on Linux (demo)",
     "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/sshd:1": {}
     },
     "hostRequirements": {
         "cpus": 4,
@@ -16,7 +17,7 @@
         "7052": { "label": "BC API" },
         "8080": { "label": "BC web client" }
     },
-    "postCreateCommand": "git clone --depth 1 https://github.com/StefanMaron/MsDyn365Bc.On.Linux.git ~/bc-linux && cd ~/bc-linux && BC_WEBCLIENT=1 docker compose up -d --wait",
+    "postCreateCommand": "git clone --depth 1 https://github.com/StefanMaron/MsDyn365Bc.On.Linux.git ~/bc-linux && cd ~/bc-linux && echo BC_WEBCLIENT=1 >> .env && docker compose up -d --wait",
     "customizations": {
         "vscode": {
             "extensions": [
