@@ -112,6 +112,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -160,5 +161,16 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000004");
         Assert.IsTrue(Alert.IsEmpty(), 'No alerts expected when no demo-data extension is installed');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

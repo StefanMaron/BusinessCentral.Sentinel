@@ -46,6 +46,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -108,5 +109,16 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
         Assert.IsTrue(Alert.IsEmpty(), 'No alert expected for PTE or Global extensions');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

@@ -17,8 +17,13 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
+        Company: Record Company;
     begin
         AlertToClear.DeleteAll();
+        Company.ModifyAll("Evaluation Company", false);
+        Company.SetFilter(Name, 'EVAL|EVAL1|EVAL2|PROD');
+        Company.DeleteAll(false);
+        Company.Reset();
     end;
 
     [Test]
@@ -61,6 +66,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -70,7 +76,6 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     begin
         Initialize();
         Company.Name := 'EVAL';
-        Company.SystemId := '00000000-0000-0000-0000-000000000009';
         Company."Evaluation Company" := true;
         Company.Insert();
 
@@ -95,19 +100,16 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     begin
         Initialize();
         Company.Name := 'PROD';
-        Company.SystemId := '00000000-0000-0000-0000-000000000001';
         Company."Evaluation Company" := false;
         Company.Insert();
 
         Company.Init();
         Company.Name := 'EVAL1';
-        Company.SystemId := '00000000-0000-0000-0000-000000000002';
         Company."Evaluation Company" := true;
         Company.Insert();
 
         Company.Init();
         Company.Name := 'EVAL2';
-        Company.SystemId := '00000000-0000-0000-0000-000000000003';
         Company."Evaluation Company" := true;
         Company.Insert();
 
@@ -115,5 +117,16 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
         Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

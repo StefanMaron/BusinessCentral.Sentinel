@@ -20,8 +20,15 @@ codeunit 71180509 AlertDispatcherTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
+        Company: Record Company;
+        Extension: Record "NAV App Installed App";
     begin
         AlertToClear.DeleteAll();
+        Company.ModifyAll("Evaluation Company", false);
+        Extension.DeleteAll();
+        Company.SetFilter(Name, 'EVAL|EVAL1|EVAL2|PROD');
+        Company.DeleteAll(false);
+        Company.Reset();
     end;
 
     [Test]

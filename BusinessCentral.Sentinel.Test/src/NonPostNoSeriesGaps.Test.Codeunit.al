@@ -37,8 +37,20 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
+        SalesSetup: Record "Sales & Receivables Setup";
+        PurchaseSetup: Record "Purchases & Payables Setup";
+        JobsSetup: Record "Jobs Setup";
+        NoSeries: Record "No. Series";
+        NoSeriesLine: Record "No. Series Line";
     begin
         AlertToClear.DeleteAll();
+        SalesSetup.DeleteAll(false);
+        PurchaseSetup.DeleteAll(false);
+        JobsSetup.DeleteAll(false);
+        NoSeriesLine.SetFilter("Series Code", 'SALES-ORDER|JOB|PURCH-INV');
+        NoSeriesLine.DeleteAll(false);
+        NoSeries.SetFilter(Code, 'SALES-ORDER|JOB|PURCH-INV');
+        NoSeries.DeleteAll(false);
     end;
 
     [Test]
@@ -87,6 +99,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -150,5 +163,16 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000006");
         Assert.IsTrue(Alert.IsEmpty(), 'Empty series codes should not produce alerts');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

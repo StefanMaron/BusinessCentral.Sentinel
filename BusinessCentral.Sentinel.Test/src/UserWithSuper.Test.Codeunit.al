@@ -17,8 +17,11 @@ codeunit 71180505 UserWithSuperTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
+        ExistingSuper: Record "Access Control";
     begin
         AlertToClear.DeleteAll();
+        ExistingSuper.SetRange("Role ID", 'SUPER');
+        ExistingSuper.DeleteAll(false);
     end;
 
     [Test]
@@ -30,7 +33,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         AccessControl: Record "Access Control";
     begin
         Initialize();
-        User."User Security ID" := '00000000-0000-0000-0000-000000000001';
+        User."User Security ID" := CreateGuid();
         User."User Name" := 'ALICE';
         User."License Type" := User."License Type"::"Full User";
         User.Insert();
@@ -58,7 +61,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         AccessControl: Record "Access Control";
     begin
         Initialize();
-        User."User Security ID" := '00000000-0000-0000-0000-000000000001';
+        User."User Security ID" := CreateGuid();
         User."User Name" := 'BOB';
         User."License Type" := User."License Type"::"Full User";
         User.Insert();
@@ -85,7 +88,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         Initialize();
         // The rule filters out External User / Application / AAD Group license
         // types, so an external user with SUPER should not alert.
-        User."User Security ID" := '00000000-0000-0000-0000-000000000001';
+        User."User Security ID" := CreateGuid();
         User."User Name" := 'EXT';
         User."License Type" := User."License Type"::"External User";
         User.Insert();
@@ -102,6 +105,7 @@ codeunit 71180505 UserWithSuperTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -111,7 +115,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         Dimensions: Dictionary of [Text, Text];
     begin
         Initialize();
-        User."User Security ID" := '00000000-0000-0000-0000-000000000099';
+        User."User Security ID" := CreateGuid();
         User."User Name" := 'ADMIN';
         User."License Type" := User."License Type"::"Full User";
         User.Insert();
@@ -145,7 +149,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         Initialize();
         // The rule replaces an empty Company Name with '<all>' before composing
         // the short description.
-        User."User Security ID" := '00000000-0000-0000-0000-000000000001';
+        User."User Security ID" := CreateGuid();
         User."User Name" := 'ROOT';
         User."License Type" := User."License Type"::"Full User";
         User.Insert();
@@ -160,5 +164,16 @@ codeunit 71180505 UserWithSuperTestSESTM
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000005");
         Alert.FindFirst();
         Assert.IsTrue(StrPos(Alert.ShortDescription, '<all>') > 0, 'Empty company should be rendered as <all>');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

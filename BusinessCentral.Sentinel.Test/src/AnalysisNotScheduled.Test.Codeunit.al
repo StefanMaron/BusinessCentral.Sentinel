@@ -16,8 +16,10 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
+        JobQueueEntry: Record "Job Queue Entry";
     begin
         AlertToClear.DeleteAll();
+        JobQueueEntry.DeleteAll(false);
     end;
 
     [Test]
@@ -93,6 +95,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('JobQueueEntriesPageHandler')]
     procedure ShowRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -110,5 +113,10 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Rule.ShowRelatedInformation(Alert);
         Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
         Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [PageHandler]
+    procedure JobQueueEntriesPageHandler(var JobQueueEntries: TestPage "Job Queue Entries")
+    begin
     end;
 }
