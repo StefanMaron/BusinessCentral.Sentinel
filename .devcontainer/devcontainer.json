@@ -1,0 +1,29 @@
+{
+    "name": "BC on Linux (demo)",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/sshd:1": {}
+    },
+    "workspaceFolder": "/workspaces/BusinessCentral.Sentinel/BusinessCentral.Sentinel",
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "16gb",
+        "storage": "32gb"
+    },
+    "forwardPorts": [7048, 7049, 7052, 8080],
+    "portsAttributes": {
+        "7048": { "label": "BC OData" },
+        "7049": { "label": "BC dev endpoint (F5)" },
+        "7052": { "label": "BC API" },
+        "8080": { "label": "BC web client" }
+    },
+    "postCreateCommand": "git clone --depth 1 https://github.com/aldevtools/MsDyn365Bc.On.Linux.git ~/bc-linux && ~/bc-linux/.devcontainer/setup.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dynamics-smb.al"
+            ]
+        }
+    }
+}
