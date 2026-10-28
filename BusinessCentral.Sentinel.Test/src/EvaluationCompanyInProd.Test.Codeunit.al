@@ -21,9 +21,18 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     begin
         AlertToClear.DeleteAll();
         Company.ModifyAll("Evaluation Company", false);
-        Company.SetFilter(Name, 'EVAL|EVAL1|EVAL2|PROD');
-        Company.DeleteAll(false);
-        Company.Reset();
+    end;
+
+    // Company.Insert() costs ~30s on a real server (and a second one in the same
+    // transaction stalls it), so the tests reuse the companies that already exist.
+    local procedure FlagFirstCompanyAsEvaluation(): Text[30]
+    var
+        Company: Record Company;
+    begin
+        Company.FindFirst();
+        Company."Evaluation Company" := true;
+        Company.Modify();
+        exit(Company.Name);
     end;
 
     [Test]
@@ -31,12 +40,8 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
     begin
         Initialize();
-        Company.Name := 'PROD';
-        Company."Evaluation Company" := false;
-        Company.Insert();
 
         Rule.CreateAlerts();
 
@@ -49,12 +54,9 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
     begin
         Initialize();
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
 
@@ -71,13 +73,10 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
         Dimensions: Dictionary of [Text, Text];
     begin
         Initialize();
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
@@ -96,29 +95,17 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
         ExistingEvalCompanyName: Text[30];
     begin
         Initialize();
-        // A second Company.Insert() in one transaction stalls the server, so reuse the
-        // companies that already exist: the first becomes an evaluation company, the
-        // other ones stay production.
-        Company.FindFirst();
-        ExistingEvalCompanyName := Company.Name;
-        Company."Evaluation Company" := true;
-        Company.Modify();
-
-        Clear(Company);
-        Company.Name := 'EVAL1';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        ExistingEvalCompanyName := FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
-        Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+        Assert.AreEqual(1, Alert.Count(), 'One alert per evaluation company, skipping production');
         Alert.SetFilter(ShortDescription, '*' + ExistingEvalCompanyName + '*');
-        Assert.AreEqual(1, Alert.Count(), 'The existing company flagged as evaluation should get an alert');
+        Assert.AreEqual(1, Alert.Count(), 'The company flagged as evaluation should get the alert');
     end;
 
     [ConfirmHandler]

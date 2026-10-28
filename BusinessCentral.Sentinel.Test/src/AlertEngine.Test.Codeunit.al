@@ -297,9 +297,9 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert: Record AlertSESTM;
     begin
         Initialize();
-        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'TELEM-1');
+        Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', '{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}');
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
-        Alert.SetRange(UniqueIdentifier, 'TELEM-1');
+        Alert.SetRange(UniqueIdentifier, '{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}');
         Alert.FindFirst();
 
         // Covers Alert.Table.LogUsage (populates Severity/Area/Ignore

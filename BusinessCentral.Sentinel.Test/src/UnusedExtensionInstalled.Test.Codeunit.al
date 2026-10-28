@@ -91,11 +91,10 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
-        Company: Record Company;
     begin
         Initialize();
         // Exercises the RecRef-based data probe path: an installed watched
-        // extension + a non-evaluation company + an empty probed table
+        // extension + a non-evaluation company (the server's own) + an empty probed table
         // (Shpfy Shop, 30102) should raise SE-000007.
         Extension."Package ID" := ShopifyAppId();
         Extension."App ID" := ShopifyAppId();
@@ -103,9 +102,6 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Extension."Published As" := Extension."Published As"::Global;
         Extension.Insert();
 
-        Company.Name := 'CRONUS';
-        Company."Evaluation Company" := false;
-        Company.Insert();
 
         Rule.CreateAlerts();
 

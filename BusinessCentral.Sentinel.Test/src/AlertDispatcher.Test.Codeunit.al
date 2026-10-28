@@ -26,9 +26,18 @@ codeunit 71180509 AlertDispatcherTestSESTM
         AlertToClear.DeleteAll();
         Company.ModifyAll("Evaluation Company", false);
         Extension.DeleteAll();
-        Company.SetFilter(Name, 'EVAL|EVAL1|EVAL2|PROD');
-        Company.DeleteAll(false);
-        Company.Reset();
+    end;
+
+    // Company.Insert() costs ~30s on a real server (and a second one in the same
+    // transaction stalls it), so the tests reuse the companies that already exist.
+    local procedure FlagFirstCompanyAsEvaluation(): Text[30]
+    var
+        Company: Record Company;
+    begin
+        Company.FindFirst();
+        Company."Evaluation Company" := true;
+        Company.Modify();
+        exit(Company.Name);
     end;
 
     [Test]
@@ -52,13 +61,10 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
         Extension: Record "NAV App Installed App";
     begin
         Initialize();
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        FlagFirstCompanyAsEvaluation();
 
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
@@ -83,12 +89,9 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
     begin
         Initialize();
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        FlagFirstCompanyAsEvaluation();
 
         Dispatcher.FindNewAlerts();
         Dispatcher.FindNewAlerts();
@@ -102,12 +105,9 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
     begin
         Initialize();
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        FlagFirstCompanyAsEvaluation();
 
         Dispatcher.FindNewAlerts();
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
