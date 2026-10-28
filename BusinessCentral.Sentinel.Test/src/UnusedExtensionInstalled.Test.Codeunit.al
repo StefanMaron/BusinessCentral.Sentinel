@@ -7,6 +7,8 @@ using Microsoft.Foundation.Company;
 // stubs folder so tests can seed probed rows for the RecRef data path.
 using System.Apps;
 using Microsoft.Foundation.Company;
+using System.Environment;
+using System.TestLibraries.Utilities;
 
 codeunit 71180508 UnusedExtInstalledTestSESTM
 {
@@ -14,7 +16,7 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     // The rule checks for these App IDs. The "no-table-list" variants skip the
     // RecRef-based data probe entirely — they just alert if the extension is

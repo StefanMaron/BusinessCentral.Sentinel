@@ -4,6 +4,9 @@
       "path": "BusinessCentral.Sentinel"
     },
     {
+      "path": "BusinessCentral.Sentinel.Test"
+    },
+    {
       "path": ".AL-Go"
     },
     {

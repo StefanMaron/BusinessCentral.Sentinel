@@ -25,6 +25,15 @@
     "NoImplicitWith",
     "TranslationFile"
   ],
+  "internalsVisibleTo":
+  [
+    {
+
+  "id": "4a515fb1-b43a-4e84-93bb-f5557d60b265",
+  "name": "BusinessCentral.Sentinel.Test",
+  "publisher": "Stefan Maron Consulting"
+    }
+  ],
   "runtime": "14.0",
   "resourceExposurePolicy": {
     "allowDebugging": true,

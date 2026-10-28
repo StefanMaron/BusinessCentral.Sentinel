@@ -1,8 +1,9 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
-using Microsoft.Foundation.Company;
 using System.Apps;
+using System.Environment;
+using System.TestLibraries.Utilities;
 
 // End-to-end test for AlertDispatcher — confirms that the enum-driven fan-out
 // to every IAuditAlertSESTM implementation actually runs and produces alerts
@@ -13,7 +14,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure FindNewAlertsFiresAnalysisNotScheduledOnEmptyEnv()

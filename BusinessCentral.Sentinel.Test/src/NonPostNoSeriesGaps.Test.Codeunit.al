@@ -5,6 +5,7 @@ using Microsoft.Foundation.NoSeries;
 using Microsoft.Sales.Setup;
 using Microsoft.Purchases.Setup;
 using Microsoft.Projects.Project.Setup;
+using System.TestLibraries.Utilities;
 
 codeunit 71180507 NonPostNoSeriesTestSESTM
 {
@@ -12,7 +13,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     // Seed a No. Series with a single line whose Implementation is the stub's
     // "Normal" enum value — its "No. Series - Default Impl." returns

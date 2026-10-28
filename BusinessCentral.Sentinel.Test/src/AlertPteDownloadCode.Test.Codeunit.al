@@ -2,6 +2,7 @@ namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
 using System.Apps;
+using System.TestLibraries.Utilities;
 
 codeunit 71180503 PteDownloadCodeTestSESTM
 {
@@ -9,7 +10,7 @@ codeunit 71180503 PteDownloadCodeTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     // The stub `Extension Management.GetExtensionSource` always Error()s, so
     // the TryFunction `CanDownloadSourceCode` always returns false under

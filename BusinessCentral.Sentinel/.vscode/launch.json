@@ -10,24 +10,7 @@
             "port": 7049,
             "authentication": "UserPassword",
             "breakOnError": "All",
-            "launchBrowser": false,
-            "schemaUpdateMode": "ForceSync"
-        },
-        {
-            "name": "StMaDev",
-            "type": "al",
-            "request": "launch",
-            "environmentType": "Sandbox",
-            "environmentName": "Sandbox",
-            "tenant": "4a8e15d4-f2a0-4e26-b0c5-a8215c9b5fc0",
-            "breakOnError": "All",
-            "breakOnRecordWrite": "None",
-            "startupObjectId": 71180275,
             "launchBrowser": true,
-            "enableSqlInformationDebugger": true,
-            "enableLongRunningSqlStatements": true,
-            "longRunningSqlStatementsThreshold": 500,
-            "numberOfSqlStatements": 10,
             "schemaUpdateMode": "ForceSync"
         }
     ]

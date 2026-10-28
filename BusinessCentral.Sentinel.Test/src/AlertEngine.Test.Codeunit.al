@@ -1,6 +1,7 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 
 /// <summary>
 /// Exercises the core Alert engine (Alert.Table.al) in isolation:
@@ -17,7 +18,7 @@ codeunit 71180500 AlertEngineTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure NewInsertsAlertWithDefaultSeverity()

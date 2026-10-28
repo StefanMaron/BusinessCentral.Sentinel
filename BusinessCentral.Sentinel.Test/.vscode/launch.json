@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "BC on Linux (Codespaces)",
+            "type": "al",
+            "request": "launch",
+            "server": "http://localhost",
+            "serverInstance": "BC",
+            "port": 7049,
+            "startupObjectType": "Page",
+            "startupObjectId": 130451,
+            "authentication": "UserPassword",
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "schemaUpdateMode": "ForceSync"
+        }
+    ]
+}

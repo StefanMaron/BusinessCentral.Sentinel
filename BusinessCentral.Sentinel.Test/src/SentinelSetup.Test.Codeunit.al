@@ -1,6 +1,7 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 
 codeunit 71180510 SentinelSetupTestSESTM
 {
@@ -8,7 +9,7 @@ codeunit 71180510 SentinelSetupTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure GetTelemetryLoggingFallsBackToGlobalInitValueDefault()

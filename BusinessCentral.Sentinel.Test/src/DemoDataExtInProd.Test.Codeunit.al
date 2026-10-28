@@ -2,6 +2,7 @@ namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
 using System.Apps;
+using System.TestLibraries.Utilities;
 
 codeunit 71180504 DemoDataExtInProdTestSESTM
 {
@@ -9,7 +10,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     // These are the three App IDs the rule looks for. Keep in sync with
     // DemoDataExtInProd.Codeunit.al.

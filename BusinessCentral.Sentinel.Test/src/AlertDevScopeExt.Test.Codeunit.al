@@ -2,6 +2,7 @@ namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
 using System.Apps;
+using System.TestLibraries.Utilities;
 
 codeunit 71180502 AlertDevScopeExtTestSESTM
 {
@@ -9,7 +10,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure DevScopeExtensionCreatesWarningAlert()

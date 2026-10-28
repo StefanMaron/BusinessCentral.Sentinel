@@ -3,6 +3,7 @@ namespace STM.BusinessCentral.Sentinel.Test;
 using STM.BusinessCentral.Sentinel;
 using System.Security.AccessControl;
 using System.Security.User;
+using System.TestLibraries.Utilities;
 
 codeunit 71180505 UserWithSuperTestSESTM
 {
@@ -10,7 +11,7 @@ codeunit 71180505 UserWithSuperTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure UserWithSuperRoleCreatesInfoAlert()

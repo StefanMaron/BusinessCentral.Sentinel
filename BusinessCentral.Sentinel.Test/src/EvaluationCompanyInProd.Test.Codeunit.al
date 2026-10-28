@@ -2,6 +2,8 @@ namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
 using Microsoft.Foundation.Company;
+using System.Environment;
+using System.TestLibraries.Utilities;
 
 codeunit 71180501 EvalCompanyInProdTestSESTM
 {
@@ -9,7 +11,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure NoEvaluationCompaniesCreatesNoAlerts()

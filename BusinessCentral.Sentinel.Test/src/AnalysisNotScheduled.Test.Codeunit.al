@@ -1,6 +1,7 @@
 namespace STM.BusinessCentral.Sentinel.Test;
 
 using STM.BusinessCentral.Sentinel;
+using System.TestLibraries.Utilities;
 using System.Threading;
 
 codeunit 71180506 AnalysisNotSchedTestSESTM
@@ -9,7 +10,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
     Access = Internal;
 
     var
-        Assert: Codeunit Assert;
+        Assert: Codeunit "Library Assert";
 
     [Test]
     procedure MissingJobQueueEntryCreatesAlert()
