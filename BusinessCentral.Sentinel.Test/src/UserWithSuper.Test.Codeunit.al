@@ -14,6 +14,13 @@ codeunit 71180505 UserWithSuperTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure UserWithSuperRoleCreatesInfoAlert()
     var
@@ -22,6 +29,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Initialize();
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
         User."User Name" := 'ALICE';
         User."License Type" := User."License Type"::"Full User";
@@ -49,6 +57,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Initialize();
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
         User."User Name" := 'BOB';
         User."License Type" := User."License Type"::"Full User";
@@ -73,6 +82,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Initialize();
         // The rule filters out External User / Application / AAD Group license
         // types, so an external user with SUPER should not alert.
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';
@@ -100,6 +110,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         AccessControl: Record "Access Control";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         User."User Security ID" := '00000000-0000-0000-0000-000000000099';
         User."User Name" := 'ADMIN';
         User."License Type" := User."License Type"::"Full User";
@@ -131,6 +142,7 @@ codeunit 71180505 UserWithSuperTestSESTM
         User: Record User;
         AccessControl: Record "Access Control";
     begin
+        Initialize();
         // The rule replaces an empty Company Name with '<all>' before composing
         // the short description.
         User."User Security ID" := '00000000-0000-0000-0000-000000000001';

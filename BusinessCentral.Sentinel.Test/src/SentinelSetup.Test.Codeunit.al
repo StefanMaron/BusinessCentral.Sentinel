@@ -12,12 +12,20 @@ codeunit 71180510 SentinelSetupTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure GetTelemetryLoggingFallsBackToGlobalInitValueDefault()
     var
         Setup: Record SentinelSetup;
         Result: Enum TelemetryLogging;
     begin
+        Initialize();
         // Nothing in SentinelRuleSet, nothing pre-seeded. `SaveGet` inside
         // `GetTelemetryLoggingSetting` calls `Init` + `Insert` on the
         // singleton, and `InitValue = Daily` on the table field establishes
@@ -34,6 +42,7 @@ codeunit 71180510 SentinelSetupTestSESTM
         RuleSet: Record SentinelRuleSetSESTM;
         Result: Enum TelemetryLogging;
     begin
+        Initialize();
         RuleSet.AlertCode := "AlertCodeSESTM"::"SE-000002";
         RuleSet.TelemetryLogging := TelemetryLogging::OnRuleLogging;
         RuleSet.Insert();
@@ -50,6 +59,7 @@ codeunit 71180510 SentinelSetupTestSESTM
         RuleSet: Record SentinelRuleSetSESTM;
         Result: Enum TelemetryLogging;
     begin
+        Initialize();
         // An entry exists but TelemetryLogging is the blank " " sentinel —
         // the hierarchy should treat that as "no override" and return the
         // global default.
@@ -68,6 +78,7 @@ codeunit 71180510 SentinelSetupTestSESTM
         Setup: Record SentinelSetup;
         Result: Enum TelemetryLogging;
     begin
+        Initialize();
         // First lookup populates the singleton via SaveGet → InitValue → Daily.
         Setup.GetTelemetryLoggingSetting("AlertCodeSESTM"::"SE-000004");
 

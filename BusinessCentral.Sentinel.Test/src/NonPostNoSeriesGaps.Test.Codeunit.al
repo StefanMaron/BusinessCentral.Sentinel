@@ -34,6 +34,13 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         NoSeriesLine.Insert();
     end;
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure SalesOrderNonGapSeriesCreatesWarning()
     var
@@ -41,6 +48,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         Rule: Codeunit NonPostNoSeriesGapsSESTM;
         SalesSetup: Record "Sales & Receivables Setup";
     begin
+        Initialize();
         SeedNonGapNoSeries('SALES-ORDER');
 
         SalesSetup."Primary Key" := '';
@@ -64,6 +72,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         Rule: Codeunit NonPostNoSeriesGapsSESTM;
         JobsSetup: Record "Jobs Setup";
     begin
+        Initialize();
         SeedNonGapNoSeries('JOB');
 
         JobsSetup."Primary Key" := '';
@@ -85,6 +94,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         SalesSetup: Record "Sales & Receivables Setup";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         SeedNonGapNoSeries('SALES-ORDER');
         SalesSetup."Primary Key" := '';
         SalesSetup."Order Nos." := 'SALES-ORDER';
@@ -109,6 +119,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         Rule: Codeunit NonPostNoSeriesGapsSESTM;
         PurchaseSetup: Record "Purchases & Payables Setup";
     begin
+        Initialize();
         SeedNonGapNoSeries('PURCH-INV');
 
         PurchaseSetup."Primary Key" := '';
@@ -129,6 +140,7 @@ codeunit 71180507 NonPostNoSeriesTestSESTM
         Rule: Codeunit NonPostNoSeriesGapsSESTM;
         SalesSetup: Record "Sales & Receivables Setup";
     begin
+        Initialize();
         // No Sales Setup inserted at all — every series code the rule reads
         // is empty. CheckNoSeries exits early on empty strings.
         SalesSetup."Primary Key" := '';

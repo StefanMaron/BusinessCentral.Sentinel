@@ -13,6 +13,15 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
+
     [Test]
     procedure DevScopeExtensionCreatesWarningAlert()
     var
@@ -20,6 +29,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'Dev Extension';
@@ -43,6 +53,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         // Rule's AddCustomTelemetryDimensions does `Extensions.Get(UniqueIdentifier)`
         // where UniqueIdentifier is the App ID — but Get always uses the
         // primary key (Package ID). To exercise the full dimensions path,
@@ -79,6 +90,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'PTE Extension';

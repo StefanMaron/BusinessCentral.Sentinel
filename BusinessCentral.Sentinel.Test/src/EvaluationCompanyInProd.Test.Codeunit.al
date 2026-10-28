@@ -14,6 +14,13 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure NoEvaluationCompaniesCreatesNoAlerts()
     var
@@ -21,6 +28,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Initialize();
         Company.Name := 'PROD';
         Company."Evaluation Company" := false;
         Company.Insert();
@@ -38,6 +46,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Initialize();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -59,6 +68,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Company: Record Company;
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         Company.Name := 'EVAL';
         Company.SystemId := '00000000-0000-0000-0000-000000000009';
         Company."Evaluation Company" := true;
@@ -83,6 +93,7 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
     begin
+        Initialize();
         Company.Name := 'PROD';
         Company.SystemId := '00000000-0000-0000-0000-000000000001';
         Company."Evaluation Company" := false;

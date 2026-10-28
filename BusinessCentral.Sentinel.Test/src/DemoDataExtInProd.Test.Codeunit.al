@@ -30,6 +30,15 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         exit('a0673989-48a4-48a0-9517-499c9f4037d3');
     end;
 
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
+
     [Test]
     procedure InstalledContosoDemoDataCreatesAlert()
     var
@@ -37,6 +46,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         Rule: Codeunit DemoDataExtInProdSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := ContosoCoffeeAppId();
         Extension.Name := 'Contoso Coffee Demo Data';
@@ -59,6 +69,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         Rule: Codeunit DemoDataExtInProdSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := ContosoCoffeeAppId();
         Extension.Name := 'Contoso Coffee';
@@ -85,6 +96,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         Rule: Codeunit DemoDataExtInProdSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         // Covers the US variant of the Contoso Coffee demo dataset to match
         // ContosoCoffeeDemoDatasetUSAppIdTok in the rule.
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
@@ -107,6 +119,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         // Seed Package ID == App ID so the rule's Get-by-PK lookup in
         // AddCustomTelemetryDimensions actually finds the row.
         Extension."Package ID" := ContosoCoffeeAppId();
@@ -136,6 +149,7 @@ codeunit 71180504 DemoDataExtInProdTestSESTM
         Rule: Codeunit DemoDataExtInProdSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := 'deadbeef-dead-beef-dead-beefdeadbeef';
         Extension.Name := 'Some Other Extension';

@@ -17,12 +17,20 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure FindNewAlertsFiresAnalysisNotScheduledOnEmptyEnv()
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
     begin
+        Initialize();
         // With nothing seeded, the "analysis not scheduled" rule has a trigger
         // (no Job Queue Entry matching the rerun codeunit) — all the other
         // rules early-exit.
@@ -40,6 +48,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Company: Record Company;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -69,6 +78,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Dispatcher: Codeunit AlertDispatcherSESTM;
         Company: Record Company;
     begin
+        Initialize();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();
@@ -87,6 +97,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Dispatcher: Codeunit AlertDispatcherSESTM;
         Company: Record Company;
     begin
+        Initialize();
         Company.Name := 'EVAL';
         Company."Evaluation Company" := true;
         Company.Insert();

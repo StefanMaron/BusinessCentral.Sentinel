@@ -21,11 +21,19 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+    end;
+
     [Test]
     procedure NewInsertsAlertWithDefaultSeverity()
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New(
             "AlertCodeSESTM"::"SE-000001",
             'short',
@@ -49,6 +57,7 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert: Record AlertSESTM;
         RuleSet: Record SentinelRuleSetSESTM;
     begin
+        Initialize();
         RuleSet.AlertCode := "AlertCodeSESTM"::"SE-000002";
         RuleSet.Severity := SeveritySESTM::Info;
         RuleSet.Insert();
@@ -74,6 +83,7 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert: Record AlertSESTM;
         RuleSet: Record SentinelRuleSetSESTM;
     begin
+        Initialize();
         RuleSet.AlertCode := "AlertCodeSESTM"::"SE-000003";
         RuleSet.Severity := SeveritySESTM::Disabled;
         RuleSet.Insert();
@@ -97,6 +107,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New(
             "AlertCodeSESTM"::"SE-000004",
             'short',
@@ -116,6 +127,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New(
             "AlertCodeSESTM"::"SE-000005",
             'first',
@@ -147,6 +159,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New(
             "AlertCodeSESTM"::"SE-000006",
             'first',
@@ -173,6 +186,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New(
             "AlertCodeSESTM"::"SE-000007",
             'short',
@@ -202,6 +216,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         // Covers the `if NumberSequence.Exists(...) then Restart(...)` arm in
         // ClearAllAlerts. We create the sequence manually because the real
         // creation site (Alert.OnInsert) does not fire under al-runner (#27).
@@ -217,6 +232,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'C-1');
         Alert.New("AlertCodeSESTM"::"SE-000002", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'C-2');
         Assert.IsFalse(Alert.IsEmpty(), 'precondition: alerts exist');
@@ -235,6 +251,7 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert: Record AlertSESTM;
         IgnoredAlert: Record IgnoredAlertsSESTM;
     begin
+        Initialize();
         Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'GUARD-1');
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
         Alert.SetRange(UniqueIdentifier, 'GUARD-1');
@@ -255,6 +272,7 @@ codeunit 71180500 AlertEngineTestSESTM
         Alert: Record AlertSESTM;
         IgnoredAlert: Record IgnoredAlertsSESTM;
     begin
+        Initialize();
         Alert.New("AlertCodeSESTM"::"SE-000002", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'GUARD-2');
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
         Alert.SetRange(UniqueIdentifier, 'GUARD-2');
@@ -278,6 +296,7 @@ codeunit 71180500 AlertEngineTestSESTM
     var
         Alert: Record AlertSESTM;
     begin
+        Initialize();
         Alert.New("AlertCodeSESTM"::"SE-000001", 's', SeveritySESTM::Warning, AreaSESTM::Technical, 'l', 'a', 'TELEM-1');
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
         Alert.SetRange(UniqueIdentifier, 'TELEM-1');

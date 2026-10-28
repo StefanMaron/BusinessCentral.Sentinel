@@ -13,6 +13,15 @@ codeunit 71180503 PteDownloadCodeTestSESTM
     var
         Assert: Codeunit "Library Assert";
 
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
+
     // The stub `Extension Management.GetExtensionSource` always Error()s, so
     // the TryFunction `CanDownloadSourceCode` always returns false under
     // al-runner — every PTE in the stub table therefore yields an alert.
@@ -23,6 +32,7 @@ codeunit 71180503 PteDownloadCodeTestSESTM
         Rule: Codeunit AlertPteDownloadCodeSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
         Extension."App ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
         Extension.Name := 'Customer PTE';
@@ -46,6 +56,7 @@ codeunit 71180503 PteDownloadCodeTestSESTM
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         // Seed Package ID == App ID so the rule's Get-by-PK lookup in
         // AddCustomTelemetryDimensions actually finds the row.
         Extension."Package ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
@@ -76,6 +87,7 @@ codeunit 71180503 PteDownloadCodeTestSESTM
         Rule: Codeunit AlertPteDownloadCodeSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
         Extension."App ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
         Extension.Name := 'Dev Ext';
