@@ -11,10 +11,34 @@ using System.TestLibraries.Utilities;
 codeunit 71180509 AlertDispatcherTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
         Assert: Codeunit "Library Assert";
+
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+        Company: Record Company;
+        Extension: Record "NAV App Installed App";
+    begin
+        AlertToClear.DeleteAll();
+        Company.ModifyAll("Evaluation Company", false);
+        Extension.DeleteAll();
+    end;
+
+    // Company.Insert() costs ~30s on a real server (and a second one in the same
+    // transaction stalls it), so the tests reuse the companies that already exist.
+    local procedure FlagFirstCompanyAsEvaluation(): Text[30]
+    var
+        Company: Record Company;
+    begin
+        Company.FindFirst();
+        Company."Evaluation Company" := true;
+        Company.Modify();
+        exit(Company.Name);
+    end;
 
     [Test]
     procedure FindNewAlertsFiresAnalysisNotScheduledOnEmptyEnv()
@@ -22,6 +46,7 @@ codeunit 71180509 AlertDispatcherTestSESTM
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
     begin
+        Initialize();
         // With nothing seeded, the "analysis not scheduled" rule has a trigger
         // (no Job Queue Entry matching the rerun codeunit) — all the other
         // rules early-exit.
@@ -36,12 +61,10 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
         Extension: Record "NAV App Installed App";
     begin
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        FlagFirstCompanyAsEvaluation();
 
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
@@ -66,11 +89,9 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
     begin
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        FlagFirstCompanyAsEvaluation();
 
         Dispatcher.FindNewAlerts();
         Dispatcher.FindNewAlerts();
@@ -84,11 +105,9 @@ codeunit 71180509 AlertDispatcherTestSESTM
     var
         Alert: Record AlertSESTM;
         Dispatcher: Codeunit AlertDispatcherSESTM;
-        Company: Record Company;
     begin
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        FlagFirstCompanyAsEvaluation();
 
         Dispatcher.FindNewAlerts();
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");

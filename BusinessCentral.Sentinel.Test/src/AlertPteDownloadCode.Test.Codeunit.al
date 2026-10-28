@@ -7,10 +7,20 @@ using System.TestLibraries.Utilities;
 codeunit 71180503 PteDownloadCodeTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
         Assert: Codeunit "Library Assert";
+
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
 
     // The stub `Extension Management.GetExtensionSource` always Error()s, so
     // the TryFunction `CanDownloadSourceCode` always returns false under
@@ -18,10 +28,13 @@ codeunit 71180503 PteDownloadCodeTestSESTM
     [Test]
     procedure PteWithoutDownloadCodeCreatesWarning()
     var
+        DownloadStub: Codeunit PteDownloadCodeStubSESTM;
         Alert: Record AlertSESTM;
         Rule: Codeunit AlertPteDownloadCodeSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
+        BindSubscription(DownloadStub);
         Extension."Package ID" := 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
         Extension."App ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
         Extension.Name := 'Customer PTE';
@@ -38,13 +51,17 @@ codeunit 71180503 PteDownloadCodeTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
+        DownloadStub: Codeunit PteDownloadCodeStubSESTM;
         Alert: Record AlertSESTM;
         Rule: Codeunit AlertPteDownloadCodeSESTM;
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
+        BindSubscription(DownloadStub);
         // Seed Package ID == App ID so the rule's Get-by-PK lookup in
         // AddCustomTelemetryDimensions actually finds the row.
         Extension."Package ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
@@ -75,6 +92,7 @@ codeunit 71180503 PteDownloadCodeTestSESTM
         Rule: Codeunit AlertPteDownloadCodeSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
         Extension."App ID" := 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
         Extension.Name := 'Dev Ext';
@@ -92,5 +110,16 @@ codeunit 71180503 PteDownloadCodeTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000001");
         Assert.IsTrue(Alert.IsEmpty(), 'Non-PTE extensions should not trigger SE-000001');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

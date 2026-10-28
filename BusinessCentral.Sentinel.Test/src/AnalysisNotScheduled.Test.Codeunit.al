@@ -7,10 +7,20 @@ using System.Threading;
 codeunit 71180506 AnalysisNotSchedTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
         Assert: Codeunit "Library Assert";
+
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+        JobQueueEntry: Record "Job Queue Entry";
+    begin
+        AlertToClear.DeleteAll();
+        JobQueueEntry.DeleteAll(false);
+    end;
 
     [Test]
     procedure MissingJobQueueEntryCreatesAlert()
@@ -18,6 +28,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit AnalysisNotScheduledSESTM;
     begin
+        Initialize();
         Rule.CreateAlerts();
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000008");
@@ -34,6 +45,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Rule: Codeunit AnalysisNotScheduledSESTM;
         JobQueueEntry: Record "Job Queue Entry";
     begin
+        Initialize();
         JobQueueEntry.ID := '00000000-0000-0000-0000-000000000001';
         JobQueueEntry."Object Type to Run" := JobQueueEntry."Object Type to Run"::Codeunit;
         JobQueueEntry."Object ID to Run" := Codeunit::ReRunAllAlerts;
@@ -52,6 +64,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Rule: Codeunit AnalysisNotScheduledSESTM;
         JobQueueEntry: Record "Job Queue Entry";
     begin
+        Initialize();
         JobQueueEntry.ID := '00000000-0000-0000-0000-000000000001';
         JobQueueEntry."Object Type to Run" := JobQueueEntry."Object Type to Run"::Codeunit;
         JobQueueEntry."Object ID to Run" := 99999; // not ReRunAllAlerts
@@ -69,6 +82,7 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit AnalysisNotScheduledSESTM;
     begin
+        Initialize();
         // al-runner's Confirm() always returns true, so AutoFix enters the
         // `this.CreateJobQueueEntry()` branch. That method itself currently
         // crashes on `Validate(DateFormula field)` under al-runner, so we
@@ -81,12 +95,14 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('JobQueueEntriesPageHandler')]
     procedure ShowRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit AnalysisNotScheduledSESTM;
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         // Smoke: ensure the rest of the IAuditAlertSESTM surface runs for
         // SE-000008 without crashing. (Rule.ShowMoreDetails skipped until
         // upstream Hyperlink NullRef fix.)
@@ -97,5 +113,10 @@ codeunit 71180506 AnalysisNotSchedTestSESTM
         Rule.ShowRelatedInformation(Alert);
         Rule.AddCustomTelemetryDimensions(Alert, Dimensions);
         Assert.AreNotEqual('', Rule.GetTelemetryDescription(Alert), 'Telemetry description should not be empty');
+    end;
+
+    [PageHandler]
+    procedure JobQueueEntriesPageHandler(var JobQueueEntries: TestPage "Job Queue Entries")
+    begin
     end;
 }

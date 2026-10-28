@@ -7,10 +7,20 @@ using System.TestLibraries.Utilities;
 codeunit 71180502 AlertDevScopeExtTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
         Assert: Codeunit "Library Assert";
+
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
 
     [Test]
     procedure DevScopeExtensionCreatesWarningAlert()
@@ -19,6 +29,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'Dev Extension';
@@ -35,6 +46,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
@@ -42,6 +54,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Extension: Record "NAV App Installed App";
         Dimensions: Dictionary of [Text, Text];
     begin
+        Initialize();
         // Rule's AddCustomTelemetryDimensions does `Extensions.Get(UniqueIdentifier)`
         // where UniqueIdentifier is the App ID — but Get always uses the
         // primary key (Package ID). To exercise the full dimensions path,
@@ -78,6 +91,7 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
         Rule: Codeunit AlertDevScopeExtSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := '22222222-2222-2222-2222-222222222222';
         Extension.Name := 'PTE Extension';
@@ -95,5 +109,16 @@ codeunit 71180502 AlertDevScopeExtTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000002");
         Assert.IsTrue(Alert.IsEmpty(), 'No alert expected for PTE or Global extensions');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

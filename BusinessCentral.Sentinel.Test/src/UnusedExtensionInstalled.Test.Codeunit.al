@@ -13,6 +13,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180508 UnusedExtInstalledTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
@@ -31,12 +32,22 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         exit('334ef79e-547e-4631-8ba1-7a7f18e14de6');
     end;
 
+    local procedure Initialize()
+    var
+        Extension: Record "NAV App Installed App";
+        AlertToClear: Record AlertSESTM;
+    begin
+        AlertToClear.DeleteAll();
+        Extension.DeleteAll();
+    end;
+
     [Test]
     procedure NoWatchedExtensionsInstalledCreatesNoAlerts()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit UnusedExtensionInstalledSESTM;
     begin
+        Initialize();
         // Nothing seeded — every RaiseAlertIfExtensionIsUnused call should
         // early-exit on `Extensions.IsEmpty()`.
         Rule.CreateAlerts();
@@ -52,6 +63,7 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := CloudMigrationAppId();
         Extension.Name := 'Cloud Migration';
@@ -79,10 +91,10 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
-        Company: Record Company;
     begin
+        Initialize();
         // Exercises the RecRef-based data probe path: an installed watched
-        // extension + a non-evaluation company + an empty probed table
+        // extension + a non-evaluation company (the server's own) + an empty probed table
         // (Shpfy Shop, 30102) should raise SE-000007.
         Extension."Package ID" := ShopifyAppId();
         Extension."App ID" := ShopifyAppId();
@@ -90,9 +102,6 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Extension."Published As" := Extension."Published As"::Global;
         Extension.Insert();
 
-        Company.Name := 'CRONUS';
-        Company."Evaluation Company" := false;
-        Company.Insert();
 
         Rule.CreateAlerts();
 
@@ -115,6 +124,7 @@ codeunit 71180508 UnusedExtInstalledTestSESTM
         Rule: Codeunit UnusedExtensionInstalledSESTM;
         Extension: Record "NAV App Installed App";
     begin
+        Initialize();
         Extension."Package ID" := '11111111-1111-1111-1111-111111111111';
         Extension."App ID" := CloudMigrationAppId();
         Extension.Name := 'Cloud Migration';

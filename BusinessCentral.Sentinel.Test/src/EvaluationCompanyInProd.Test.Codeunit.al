@@ -8,21 +8,40 @@ using System.TestLibraries.Utilities;
 codeunit 71180501 EvalCompanyInProdTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
         Assert: Codeunit "Library Assert";
+
+    local procedure Initialize()
+    var
+        AlertToClear: Record AlertSESTM;
+        Company: Record Company;
+    begin
+        AlertToClear.DeleteAll();
+        Company.ModifyAll("Evaluation Company", false);
+    end;
+
+    // Company.Insert() costs ~30s on a real server (and a second one in the same
+    // transaction stalls it), so the tests reuse the companies that already exist.
+    local procedure FlagFirstCompanyAsEvaluation(): Text[30]
+    var
+        Company: Record Company;
+    begin
+        Company.FindFirst();
+        Company."Evaluation Company" := true;
+        Company.Modify();
+        exit(Company.Name);
+    end;
 
     [Test]
     procedure NoEvaluationCompaniesCreatesNoAlerts()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
     begin
-        Company.Name := 'PROD';
-        Company."Evaluation Company" := false;
-        Company.Insert();
+        Initialize();
 
         Rule.CreateAlerts();
 
@@ -35,11 +54,9 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
     begin
-        Company.Name := 'EVAL';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
 
@@ -51,17 +68,15 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmNoHandler,MessageHandler')]
     procedure ShowMoreDetailsAndRelatedAndTelemetryAreCallable()
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
         Dimensions: Dictionary of [Text, Text];
     begin
-        Company.Name := 'EVAL';
-        Company.SystemId := '00000000-0000-0000-0000-000000000009';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
@@ -80,28 +95,27 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
     var
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
-        Company: Record Company;
+        ExistingEvalCompanyName: Text[30];
     begin
-        Company.Name := 'PROD';
-        Company.SystemId := '00000000-0000-0000-0000-000000000001';
-        Company."Evaluation Company" := false;
-        Company.Insert();
-
-        Company.Init();
-        Company.Name := 'EVAL1';
-        Company.SystemId := '00000000-0000-0000-0000-000000000002';
-        Company."Evaluation Company" := true;
-        Company.Insert();
-
-        Company.Init();
-        Company.Name := 'EVAL2';
-        Company.SystemId := '00000000-0000-0000-0000-000000000003';
-        Company."Evaluation Company" := true;
-        Company.Insert();
+        Initialize();
+        ExistingEvalCompanyName := FlagFirstCompanyAsEvaluation();
 
         Rule.CreateAlerts();
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
-        Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+        Assert.AreEqual(1, Alert.Count(), 'One alert per evaluation company, skipping production');
+        Alert.SetFilter(ShortDescription, '*' + ExistingEvalCompanyName + '*');
+        Assert.AreEqual(1, Alert.Count(), 'The company flagged as evaluation should get the alert');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmNoHandler(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := false;
+    end;
+
+    [MessageHandler]
+    procedure MessageHandler(Message: Text[1024])
+    begin
     end;
 }

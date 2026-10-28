@@ -37,13 +37,30 @@ codeunit 71180276 AlertPteDownloadCodeSESTM implements IAuditAlertSESTM
             until Extensions.Next() = 0;
     end;
 
+    local procedure CanDownloadSourceCode(PackageId: Guid): Boolean
+    var
+        CanDownload: Boolean;
+        IsHandled: Boolean;
+    begin
+        this.OnBeforeCanDownloadSourceCode(PackageId, CanDownload, IsHandled);
+        if IsHandled then
+            exit(CanDownload);
+
+        exit(this.TryGetExtensionSource(PackageId));
+    end;
+
     [TryFunction]
-    local procedure CanDownloadSourceCode(PackageId: Guid)
+    local procedure TryGetExtensionSource(PackageId: Guid)
     var
         ExtensionManagement: Codeunit "Extension Management";
         ExtensionSourceTempBlob: Codeunit "Temp Blob";
     begin
         ExtensionManagement.GetExtensionSource(PackageId, ExtensionSourceTempBlob);
+    end;
+
+    [IntegrationEvent(false, false)]
+    internal procedure OnBeforeCanDownloadSourceCode(PackageId: Guid; var CanDownload: Boolean; var IsHandled: Boolean)
+    begin
     end;
 
     procedure ShowMoreDetails(var Alert: Record AlertSESTM)
