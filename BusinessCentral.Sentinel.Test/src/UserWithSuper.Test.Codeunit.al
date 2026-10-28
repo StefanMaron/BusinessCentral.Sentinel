@@ -8,6 +8,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180505 UserWithSuperTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

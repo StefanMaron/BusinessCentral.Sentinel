@@ -15,6 +15,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180500 AlertEngineTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

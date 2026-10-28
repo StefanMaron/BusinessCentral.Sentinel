@@ -6,6 +6,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180510 SentinelSetupTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

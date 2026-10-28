@@ -10,6 +10,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180507 NonPostNoSeriesTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

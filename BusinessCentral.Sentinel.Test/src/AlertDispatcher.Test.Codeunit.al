@@ -11,6 +11,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180509 AlertDispatcherTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

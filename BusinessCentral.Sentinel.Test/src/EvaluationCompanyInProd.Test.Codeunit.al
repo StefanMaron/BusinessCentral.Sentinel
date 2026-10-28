@@ -8,6 +8,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180501 EvalCompanyInProdTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

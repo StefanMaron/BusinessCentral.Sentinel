@@ -7,6 +7,7 @@ using System.Threading;
 codeunit 71180506 AnalysisNotSchedTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

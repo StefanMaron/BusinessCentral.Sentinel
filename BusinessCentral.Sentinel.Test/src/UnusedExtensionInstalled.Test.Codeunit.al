@@ -13,6 +13,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180508 UnusedExtInstalledTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var

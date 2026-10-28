@@ -7,6 +7,7 @@ using System.TestLibraries.Utilities;
 codeunit 71180503 PteDownloadCodeTestSESTM
 {
     Subtype = Test;
+    TestPermissions = Disabled;
     Access = Internal;
 
     var
