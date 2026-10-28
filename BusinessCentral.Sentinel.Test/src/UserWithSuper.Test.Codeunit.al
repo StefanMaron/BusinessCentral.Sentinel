@@ -17,11 +17,11 @@ codeunit 71180505 UserWithSuperTestSESTM
     local procedure Initialize()
     var
         AlertToClear: Record AlertSESTM;
-        ExistingSuper: Record "Access Control";
+        ExistingUser: Record User;
     begin
         AlertToClear.DeleteAll();
-        ExistingSuper.SetRange("Role ID", 'SUPER');
-        ExistingSuper.DeleteAll(false);
+        // Existing users (e.g. the runner's SUPER user) must not count towards the alerts under test.
+        ExistingUser.ModifyAll("License Type", ExistingUser."License Type"::"External User", false);
     end;
 
     [Test]
