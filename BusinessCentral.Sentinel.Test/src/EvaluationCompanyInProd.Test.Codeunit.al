@@ -97,19 +97,19 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
         Alert: Record AlertSESTM;
         Rule: Codeunit EvaluationCompanyInProdSESTM;
         Company: Record Company;
+        ExistingEvalCompanyName: Text[30];
     begin
         Initialize();
-        Company.Name := 'PROD';
-        Company."Evaluation Company" := false;
-        Company.Insert();
-
-        Company.Init();
-        Company.Name := 'EVAL1';
+        // A second Company.Insert() in one transaction stalls the server, so reuse the
+        // companies that already exist: the first becomes an evaluation company, the
+        // other ones stay production.
+        Company.FindFirst();
+        ExistingEvalCompanyName := Company.Name;
         Company."Evaluation Company" := true;
-        Company.Insert();
+        Company.Modify();
 
-        Company.Init();
-        Company.Name := 'EVAL2';
+        Clear(Company);
+        Company.Name := 'EVAL1';
         Company."Evaluation Company" := true;
         Company.Insert();
 
@@ -117,6 +117,8 @@ codeunit 71180501 EvalCompanyInProdTestSESTM
 
         Alert.SetRange(AlertCode, "AlertCodeSESTM"::"SE-000003");
         Assert.AreEqual(2, Alert.Count(), 'One alert per evaluation company, skipping production');
+        Alert.SetFilter(ShortDescription, '*' + ExistingEvalCompanyName + '*');
+        Assert.AreEqual(1, Alert.Count(), 'The existing company flagged as evaluation should get an alert');
     end;
 
     [ConfirmHandler]
